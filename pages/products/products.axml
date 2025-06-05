@@ -1,0 +1,15 @@
+<view class="container">
+  <view class="header">{{productsLabel}}</view>
+  <button onTap="onAddProduct">{{addProductLabel}}</button>
+  <view class="product-list">
+    <block a:for="{{products}}" a:key="sku">
+      <view class="product-item">
+        <view class="product-info">
+          <text>{{item.name}} ({{item.sku}})</text>
+          <text>{{stockLabel}}: {{item.stock}}</text>
+        </view>
+        <button class="edit-btn" size="mini" onTap="onEditProduct" data-sku="{{item.sku}}">{{editProductLabel}}</button>
+      </view>
+    </block>
+  </view>
+</view>

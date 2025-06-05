@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/products/products",
+    "pages/products/addProduct",
+    "pages/products/editProduct",
+    "pages/sales/sales"
+  ],
+  "window": {
+    "defaultTitle": "UMKM Invoicing"
+  }
+}

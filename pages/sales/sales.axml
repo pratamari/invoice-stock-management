@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="header">{{salesLabel}}</view>
+  <view class="product-list">
+    <block a:for="{{products}}" a:key="sku">
+      <view class="product-item">
+        <view class="info">
+          <text>{{item.name}}</text>
+          <text>{{stockLabel}}: {{item.stock}}</text>
+          <text>{{priceLabel}}: {{item.price}}</text>
+        </view>
+        <view class="qty-actions">
+          <button size="mini" onTap="decrementQty" data-sku="{{item.sku}}">-</button>
+          <input type="digit" value="{{item.qty}}" disabled />
+          <button size="mini" onTap="incrementQty" data-sku="{{item.sku}}">+</button>
+        </view>
+      </view>
+    </block>
+  </view>
+  <button class="confirm-btn" onTap="onConfirm">{{confirmLabel}}</button>
+
+  <!-- Konfirmasi Modal -->
+  <view class="modal-mask" hidden="{{!showModal}}">
+    <view class="modal-container">
+      <view class="modal-header">{{receiptLabel}}</view>
+      <view class="modal-body">
+        <view>{{receiptNoLabel}}: {{receiptNo}}</view>
+        <block a:for="{{selectedProducts}}" a:key="sku">
+          <view class="modal-row">
+            <text>{{item.name}}</text>
+            <text>x{{item.qty}}</text>
+            <text>{{priceLabel}}: {{item.price}}</text>
+            <text>{{totalLabel}}: {{item.qty * item.price}}</text>
+          </view>
+        </block>
+        <view class="modal-summary">
+          <text>{{totalItemsLabel}}: {{totalItems}}</text>
+          <text>{{totalPriceLabel}}: {{totalPrice}}</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button onTap="onPrint">{{printLabel}}</button>
+        <button onTap="onDownloadPDF">{{downloadPDFLabel}}</button>
+        <button onTap="onCloseModal">{{closeLabel}}</button>
+      </view>
+    </view>
+  </view>
+</view>

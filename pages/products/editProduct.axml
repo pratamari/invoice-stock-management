@@ -1,0 +1,19 @@
+<view class="modal-mask" hidden="{{!showModal}}">
+  <view class="modal-container">
+    <view class="modal-header">{{editProductLabel}}</view>
+    <form onSubmit="onSubmitEditProduct">
+      <view class="form-group">
+        <text>{{productStockLabel}}</text>
+        <input name="stock" type="digit" value="{{editForm.stock}}" placeholder="{{productStockPlaceholder}}" />
+      </view>
+      <view class="form-group">
+        <text>{{productPriceLabel}}</text>
+        <input name="price" type="digit" value="{{editForm.price}}" placeholder="{{productPricePlaceholder}}" />
+      </view>
+      <view class="form-group">
+        <button formType="submit">{{saveLabel}}</button>
+        <button type="default" onTap="onCancelEditProduct">{{cancelLabel}}</button>
+      </view>
+    </form>
+  </view>
+</view>

@@ -1,0 +1,23 @@
+<view class="modal-mask" hidden="{{!showModal}}">
+  <view class="modal-container">
+    <view class="modal-header">{{addProductLabel}}</view>
+    <form onSubmit="onSubmitAddProduct">
+      <view class="form-group">
+        <text>{{productNameLabel}}</text>
+        <input name="name" value="{{addForm.name}}" placeholder="{{productNamePlaceholder}}" />
+      </view>
+      <view class="form-group">
+        <text>{{productCategoryLabel}}</text>
+        <input name="category" value="{{addForm.category}}" placeholder="{{productCategoryPlaceholder}}" />
+      </view>
+      <view class="form-group">
+        <text>{{productPriceLabel}}</text>
+        <input name="price" type="digit" value="{{addForm.price}}" placeholder="{{productPricePlaceholder}}" />
+      </view>
+      <view class="form-group">
+        <button formType="submit">{{saveLabel}}</button>
+        <button type="default" onTap="onCancelAddProduct">{{cancelLabel}}</button>
+      </view>
+    </form>
+  </view>
+</view>

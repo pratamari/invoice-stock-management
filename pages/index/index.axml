@@ -1,0 +1,14 @@
+<view class="container">
+  <view class="menu-row">
+    <view class="menu-card" onTap="goToProducts">
+      <text class="menu-label">{{productListLabel}}</text>
+      <image src="/assets/product.png" class="menu-icon" />
+      <text class="menu-desc">{{productDesc}}</text>
+    </view>
+    <view class="menu-card" onTap="goToSales">
+      <text class="menu-label">{{salesLabel}}</text>
+      <image src="/assets/sales.png" class="menu-icon" />
+      <text class="menu-desc">{{salesDesc}}</text>
+    </view>
+  </view>
+</view>
