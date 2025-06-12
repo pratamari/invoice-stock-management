@@ -41,5 +41,6 @@
   "homepage_sales_desc": "Buat transaksi penjualan dan cetak nota.",
   "date": "Tanggal",
   "subtotal": "Subtotal",
-  "thank_you": "Terima Kasih"
+  "thank_you": "Terima Kasih",
+  "stock_cannot_negative": "Stok tidak boleh negatif."
 }

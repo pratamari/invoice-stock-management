@@ -9,16 +9,19 @@ Page({
       name: '',
       category: '',
       price: '',
+      stock: 0
     },
     addProductLabel: '',
     productNameLabel: '',
     productCategoryLabel: '',
     productPriceLabel: '',
+    productStockLabel: '',
     saveLabel: '',
     cancelLabel: '',
     productNamePlaceholder: '',
     productCategoryPlaceholder: '',
-    productPricePlaceholder: ''
+    productPricePlaceholder: '',
+    productStockPlaceholder: ''
   },
   onLoad() {
     this.setData({
@@ -26,20 +29,30 @@ Page({
       productNameLabel: t('product_name'),
       productCategoryLabel: t('product_category'),
       productPriceLabel: t('product_price'),
+      productStockLabel: t('product_stock'),
       saveLabel: t('save'),
       cancelLabel: t('cancel'),
       productNamePlaceholder: t('product_name_placeholder'),
       productCategoryPlaceholder: t('product_category_placeholder'),
-      productPricePlaceholder: t('product_price_placeholder')
+      productPricePlaceholder: t('product_price_placeholder'),
+      productStockPlaceholder: t('product_stock_placeholder')
     });
   },
   onSubmitAddProduct(e) {
-    const { name, category, price } = e.detail.value;
+    const { name, category, price, stock } = e.detail.value;
     // Validation
     if (!name || !category || !price) {
       my.alert({
         title: t('add_product'),
         content: t('form_required_fields')
+      });
+      return;
+    }
+    const stockVal = Number(stock);
+    if (isNaN(stockVal) || stockVal < 0) {
+      my.alert({
+        title: t('add_product'),
+        content: t('stock_cannot_negative')
       });
       return;
     }
@@ -49,8 +62,8 @@ Page({
       name,
       category,
       price: parseFloat(price),
+      stock: stockVal,
       sku,
-      stock: 0
     };
     let products = load(STORAGE_KEYS.PRODUCTS);
     products.unshift(newProduct);
