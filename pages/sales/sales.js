@@ -23,15 +23,17 @@ Page({
     confirmLabel: '',
     receiptLabel: '',
     receiptNoLabel: '',
+    dateLabel: '',
+    subtotalLabel: '',
     totalLabel: '',
-    totalItemsLabel: '',
-    totalPriceLabel: '',
+    thankYouLabel: '',
     printLabel: '',
     downloadPDFLabel: '',
     closeLabel: '',
     showModal: false,
     selectedProducts: [],
     receiptNo: '',
+    receiptDate: '',
     totalItems: 0,
     totalPrice: 0
   },
@@ -47,9 +49,10 @@ Page({
       confirmLabel: t('confirm'),
       receiptLabel: t('receipt'),
       receiptNoLabel: t('receipt_no'),
+      dateLabel: t('date'),
+      subtotalLabel: t('subtotal'),
       totalLabel: t('total'),
-      totalItemsLabel: t('total_items'),
-      totalPriceLabel: t('total_price'),
+      thankYouLabel: t('thank_you'),
       printLabel: t('print'),
       downloadPDFLabel: t('download_pdf'),
       closeLabel: t('close')
@@ -85,12 +88,21 @@ Page({
     const totalItems = selectedProducts.reduce((sum, p) => sum + p.qty, 0);
     const totalPrice = selectedProducts.reduce((sum, p) => sum + p.qty * p.price, 0);
     const receiptNo = generateReceiptNo();
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const second = String(now.getSeconds()).padStart(2, '0');
+    const receiptDate = `${day}-${month}-${year} ${hour}:${minute}:${second}`;
     this.setData({
       showModal: true,
       selectedProducts,
       totalItems,
       totalPrice,
-      receiptNo
+      receiptNo,
+      receiptDate
     });
     // Simpan ke invoice history
     let invoices = load(STORAGE_KEYS.INVOICES, []);

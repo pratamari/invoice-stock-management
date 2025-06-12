@@ -20,22 +20,41 @@
 
   <!-- Konfirmasi Modal -->
   <view class="modal-mask" hidden="{{!showModal}}">
-    <view class="modal-container">
-      <view class="modal-header">{{receiptLabel}}</view>
-      <view class="modal-body">
-        <view>{{receiptNoLabel}}: {{receiptNo}}</view>
-        <block a:for="{{selectedProducts}}" a:key="sku">
-          <view class="modal-row">
-            <text>{{item.name}}</text>
-            <text>x{{item.qty}}</text>
-            <text>{{priceLabel}}: {{item.price}}</text>
-            <text>{{totalLabel}}: {{item.qty * item.price}}</text>
-          </view>
-        </block>
-        <view class="modal-summary">
-          <text>{{totalItemsLabel}}: {{totalItems}}</text>
-          <text>{{totalPriceLabel}}: {{totalPrice}}</text>
+    <view class="modal-container receipt-style">
+      <!-- Header toko -->
+      <view class="receipt-header">
+        <text class="store-name">TOKO UMKM CONTOH</text>
+        <text class="store-address">Jl. Contoh Alamat No.1, Kota, Indonesia</text>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Info Transaksi -->
+      <view class="receipt-info">
+        <view><text>{{receiptNoLabel}}</text><text class="info-value">: {{receiptNo}}</text></view>
+        <view><text>{{dateLabel}}</text><text class="info-value">: {{receiptDate}}</text></view>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Produk -->
+      <block a:for="{{selectedProducts}}" a:key="sku">
+        <view class="receipt-product-row">
+          <text>{{item.qty}} x {{item.name}}</text>
+          <text>{{item.qty * item.price | formatCurrency}}</text>
         </view>
+      </block>
+      <view class="receipt-separator"></view>
+      <!-- Subtotal dan Total -->
+      <view class="receipt-total-row">
+        <text>{{subtotalLabel}}</text>
+        <text>{{totalPrice | formatCurrency}}</text>
+      </view>
+      <view class="receipt-total-row grand">
+        <text>{{totalLabel}}</text>
+        <text>{{totalPrice | formatCurrency}}</text>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Footer -->
+      <view class="receipt-footer">
+        <text>{{thankYouLabel}}</text>
+        <text class="powered">Powered by DANA Indonesia</text>
       </view>
       <view class="modal-footer">
         <button onTap="onPrint">{{printLabel}}</button>

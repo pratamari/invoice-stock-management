@@ -38,5 +38,8 @@
   "product_list": "Daftar Produk",
   "sales_menu": "Penjualan",
   "homepage_product_desc": "Kelola produk dan tambah barang baru.",
-  "homepage_sales_desc": "Buat transaksi penjualan dan cetak nota."
+  "homepage_sales_desc": "Buat transaksi penjualan dan cetak nota.",
+  "date": "Tanggal",
+  "subtotal": "Subtotal",
+  "thank_you": "Terima Kasih"
 }
