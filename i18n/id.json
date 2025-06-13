@@ -41,6 +41,14 @@
   "homepage_sales_desc": "Buat transaksi penjualan dan cetak nota.",
   "date": "Tanggal",
   "subtotal": "Subtotal",
-  "thank_you": "Terima Kasih",
+  "thank_you": "Terima kasih",
+  "hello": "Halo",
+  "total_sales": "Total Penjualan",
+  "total_products": "Total Produk",
+  "manage_products": "Kelola Produk",
+  "manage_sales": "Kelola Penjualan",
+  "no_data": "Belum ada data.",
+  "no_sales": "Belum ada penjualan.",
+  "no_products": "Belum ada produk.",
   "stock_cannot_negative": "Stok tidak boleh negatif."
 }

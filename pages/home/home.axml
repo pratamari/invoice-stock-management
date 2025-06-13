@@ -1,0 +1,46 @@
+<view class="home-container">
+  <view class="home-header">
+  <view class="hello-row">
+    <view class="hello-texts">
+      <text class="hello">{{helloLabel}},</text>
+      <text class="umkm-name">UMKM δύο</text>
+    </view>
+    <image class="hello-icon" src="/assets/icon_greeting.png" mode="aspectFit" />
+  </view>
+</view>
+  <view class="home-cards">
+    <view class="home-card sales">
+  <view class="card-content-row">
+    <view class="card-icon-bg">
+      <image class="card-icon" src="/assets/icon_sales.png" mode="aspectFit" />
+    </view>
+    <view class="card-info">
+      <view class="card-label">{{totalSalesLabel}}</view>
+      <view class="card-value">{{isLoading ? '--' : totalSales}}</view>
+    </view>
+  </view>
+</view>
+    <view class="home-card products">
+  <view class="card-content-row">
+    <view class="card-icon-bg">
+      <image class="card-icon" src="/assets/icon_product.png" mode="aspectFit" />
+    </view>
+    <view class="card-info">
+      <view class="card-label">{{totalProductsLabel}}</view>
+      <view class="card-value">{{isLoading ? '--' : totalProducts}}</view>
+    </view>
+  </view>
+</view>
+  </view>
+  <view class="home-actions">
+    <button class="home-action-btn" onTap="goToProducts">
+  <view class="btn-label"><text>{{manageProductsLabelLine1}}</text><br/><text>{{manageProductsLabelLine2}}</text></view>
+</button>
+    <button class="home-action-btn" onTap="goToSales">
+  <view class="btn-label"><text>{{manageSalesLabelLine1}}</text><br/><text>{{manageSalesLabelLine2}}</text></view>
+</button>
+  </view>
+  <view class="home-fallback" hidden="{{!showFallback}}">
+    <text>{{fallbackText}}</text>
+  </view>
+</view>

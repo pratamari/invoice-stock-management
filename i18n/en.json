@@ -42,5 +42,13 @@
   "date": "Date",
   "subtotal": "Subtotal",
   "thank_you": "Thank you",
+  "hello": "Hello",
+  "total_sales": "Total Sales",
+  "total_products": "Total Products",
+  "manage_products": "Manage Products",
+  "manage_sales": "Manage Sales",
+  "no_data": "No data available.",
+  "no_sales": "No sales yet.",
+  "no_products": "No products yet.",
   "stock_cannot_negative": "Stock cannot be negative."
 }
