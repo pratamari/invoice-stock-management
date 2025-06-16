@@ -15,11 +15,10 @@ Page({
     productsLabel: '',
     addProductLabel: '',
     editProductLabel: '',
-    stockLabel: ''
+    stockLabel: '',
+    showCamera: false
   },
   onLoad() {
-    // Force reset storage with mock data
-    save(STORAGE_KEYS.PRODUCTS, mockProducts);
     this.refreshProducts();
   },
   onShow() {
@@ -35,10 +34,11 @@ Page({
       products = mockProducts;
       save(STORAGE_KEYS.PRODUCTS, products);
     }
-    // Initialize showMenu property and format price for all products
+    // Initialize properties for all products
     products = products.map(product => ({
       ...product,
       showMenu: false,
+      isEditing: false,
       formattedPrice: this.formatPrice(product.price)
     }));
     this.setData({ products, productsLabel, addProductLabel, editProductLabel, stockLabel });
@@ -48,11 +48,69 @@ Page({
   },
 
   onScanNote() {
-    my.navigateTo({ url: '/pages/products/scanNote' });
+    my.chooseImage({
+      count: 1,
+      sourceType: ['camera'],
+      success: (res) => {
+        if (res.tempFilePaths && res.tempFilePaths.length > 0) {
+          const imagePath = res.tempFilePaths[0];
+          console.log('Image captured:', imagePath);
+          // Here you can handle the captured image
+          // For example, navigate to a processing page
+          my.navigateTo({
+            url: `/pages/scanNote/scanNote?image=${encodeURIComponent(imagePath)}`
+          });
+        }
+      },
+      fail: (error) => {
+        // Only show error if it's not just the user canceling
+        if (error.error !== 11) {
+          console.error('Camera error:', error);
+          my.showToast({
+            type: 'fail',
+            content: 'Gagal mengambil foto',
+            duration: 2000
+          });
+        }
+      }
+    });
   },
-  onEditProduct(e) {
-    const sku = e.target.dataset.sku;
-    my.navigateTo({ url: `/pages/products/editProduct?sku=${sku}` });
+  toggleEdit(e) {
+    const index = e.target.dataset.index;
+    const products = this.data.products;
+    const product = products[index];
+
+    if (product.isEditing) {
+      // Save changes
+      save(STORAGE_KEYS.PRODUCTS, products);
+      product.isEditing = false;
+      product.showMenu = false;
+    } else {
+      // Start editing
+      product.isEditing = true;
+    }
+
+    this.setData({ products });
+  },
+
+  onStockChange(e) {
+    const index = e.target.dataset.index;
+    const products = this.data.products;
+    products[index].stock = parseInt(e.detail.value) || 0;
+    this.setData({ products });
+    // Save changes immediately
+    save(STORAGE_KEYS.PRODUCTS, products);
+  },
+
+  onPriceChange(e) {
+    const index = e.target.dataset.index;
+    const products = this.data.products;
+    const price = parseInt(e.detail.value) || 0;
+    products[index].price = price;
+    products[index].formattedPrice = this.formatPrice(price);
+    this.setData({ products });
+    // Save changes immediately
+    save(STORAGE_KEYS.PRODUCTS, products);
   },
 
   showMenu(e) {

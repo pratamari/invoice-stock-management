@@ -96,6 +96,16 @@
   color: #1e293b;
 }
 
+.value-input {
+  font-size: 16px;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 4px 8px;
+  width: 100px;
+  text-align: right;
+}
+
 .menu-wrapper {
   position: relative;
 }

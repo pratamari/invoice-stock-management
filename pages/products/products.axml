@@ -17,8 +17,8 @@
             <view class="menu-wrapper">
               <text class="dots" onTap="showMenu" data-index="{{index}}">...</text>
               <view class="action-menu" a:if="{{item.showMenu}}">
-                <view class="menu-item" onTap="onEditProduct" data-sku="{{item.sku}}">
-                  <text class="menu-text">Ubah</text>
+                <view class="menu-item" onTap="toggleEdit" data-index="{{index}}">
+                  <text class="menu-text">{{item.isEditing ? 'Simpan' : 'Ubah'}}</text>
                 </view>
                 <view class="menu-item" onTap="onDeleteProduct" data-sku="{{item.sku}}">
                   <text class="menu-text">Hapus</text>
@@ -31,14 +31,25 @@
         <view class="row">
           <text class="row-label">Jumlah</text>
           <view class="row-value-group">
-            <text class="row-value">{{item.stock}}</text>
-
+            <block a:if="{{item.isEditing}}">
+              <input class="value-input" type="number" value="{{item.stock}}" onInput="onStockChange" data-index="{{index}}" />
+            </block>
+            <block a:else>
+              <text class="row-value">{{item.stock}}</text>
+            </block>
           </view>
         </view>
 
         <view class="row">
           <text class="row-label">Harga</text>
-          <text class="row-value">{{item.formattedPrice}}</text>
+          <view class="row-value-group">
+            <block a:if="{{item.isEditing}}">
+              <input class="value-input" type="number" value="{{item.price}}" onInput="onPriceChange" data-index="{{index}}" />
+            </block>
+            <block a:else>
+              <text class="row-value">{{item.formattedPrice}}</text>
+            </block>
+          </view>
         </view>
         </view>
       </view>
