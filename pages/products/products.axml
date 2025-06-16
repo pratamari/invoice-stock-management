@@ -1,14 +1,46 @@
-<view class="container">
-  <view class="header">{{productsLabel}}</view>
-  <button onTap="onAddProduct">{{addProductLabel}}</button>
+<view class="page">
+  <text class="title">Products</text>
+  <view class="button-group">
+    <button class="action-btn" onTap="onAddProduct">Tambah</button>
+    <button class="action-btn" onTap="onScanNote">Pindai Nota</button>
+  </view>
+
   <view class="product-list">
     <block a:for="{{products}}" a:key="sku">
-      <view class="product-item">
-        <view class="product-info">
-          <text>{{item.name}} ({{item.sku}})</text>
-          <text>{{stockLabel}}: {{item.stock}}</text>
+      <view class="product-card">
+        <view class="product-header">
+          <view class="name-wrapper">
+            <view class="name-group">
+              <text class="product-name">{{item.name}}</text>
+              <text class="product-sku">SKU: {{item.sku}}</text>
+            </view>
+            <view class="menu-wrapper">
+              <text class="dots" onTap="showMenu" data-index="{{index}}">...</text>
+              <view class="action-menu" a:if="{{item.showMenu}}">
+                <view class="menu-item" onTap="onEditProduct" data-sku="{{item.sku}}">
+                  <text class="menu-text">Ubah</text>
+                </view>
+                <view class="menu-item" onTap="onDeleteProduct" data-sku="{{item.sku}}">
+                  <text class="menu-text">Hapus</text>
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
-        <button class="edit-btn" size="mini" onTap="onEditProduct" data-sku="{{item.sku}}">{{editProductLabel}}</button>
+
+        <view class="row">
+          <text class="row-label">Jumlah</text>
+          <view class="row-value-group">
+            <text class="row-value">{{item.stock}}</text>
+
+          </view>
+        </view>
+
+        <view class="row">
+          <text class="row-label">Harga</text>
+          <text class="row-value">{{item.formattedPrice}}</text>
+        </view>
+        </view>
       </view>
     </block>
   </view>
