@@ -6,9 +6,37 @@
         <text>{{productNameLabel}}</text>
         <input name="name" value="{{addForm.name}}" placeholder="{{productNamePlaceholder}}" />
       </view>
-      <view class="form-group">
+      <view class="form-group category-group">
         <text>{{productCategoryLabel}}</text>
-        <input name="category" value="{{addForm.category}}" placeholder="{{productCategoryPlaceholder}}" />
+        <view class="category-input-wrapper">
+          <input
+            name="category"
+            class="category-input"
+            value="{{categorySearch}}"
+            placeholder="{{productCategoryPlaceholder}}"
+            onInput="onCategoryInput"
+            onFocus="onCategoryFocus"
+            onBlur="onCategoryBlur"
+          />
+          <text class="category-arrow">▼</text>
+        </view>
+        <view class="category-dropdown" a:if="{{showCategoryDropdown}}">
+          <view class="category-list">
+            <block a:if="{{filteredCategories.length > 0}}">
+              <view
+                class="category-item"
+                a:for="{{filteredCategories}}"
+                data-category="{{item}}"
+                onTap="onCategorySelect"
+              >
+                {{item}}
+              </view>
+            </block>
+            <view class="no-results" a:else>
+              Tidak ada kategori yang cocok
+            </view>
+          </view>
+        </view>
       </view>
       <view class="form-group">
         <text>{{productPriceLabel}}</text>

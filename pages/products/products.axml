@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page" onTap="closeAllMenus">
   <text class="title">Products</text>
   <view class="button-group">
     <button class="action-btn" onTap="onAddProduct">Tambah</button>
@@ -15,12 +15,12 @@
               <text class="product-sku">SKU: {{item.sku}}</text>
             </view>
             <view class="menu-wrapper">
-              <text class="dots" onTap="showMenu" data-index="{{index}}">...</text>
+              <text class="dots" catchTap="showMenu" data-index="{{index}}">⋮</text>
               <view class="action-menu" a:if="{{item.showMenu}}">
-                <view class="menu-item" onTap="toggleEdit" data-index="{{index}}">
+                <view class="menu-item" catchTap="toggleEdit" data-index="{{index}}" data-menu-item="true">
                   <text class="menu-text">{{item.isEditing ? 'Simpan' : 'Ubah'}}</text>
                 </view>
-                <view class="menu-item" onTap="onDeleteProduct" data-sku="{{item.sku}}">
+                <view class="menu-item" catchTap="onDeleteProduct" data-sku="{{item.sku}}" data-menu-item="true">
                   <text class="menu-text">Hapus</text>
                 </view>
               </view>

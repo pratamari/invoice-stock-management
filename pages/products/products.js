@@ -2,151 +2,82 @@
 const { t } = require('../../utils/i18n');
 const { STORAGE_KEYS, save, load } = require('../../utils/storage');
 
-// Mock data
-const mockProducts = [
-  { name: 'Kopi Hitam', sku: 'KOPI01-HITAM', stock: 20, price: 15000 },
-  { name: 'Teh Manis', sku: 'TEH01-MANIS', stock: 15, price: 12000 },
-  { name: 'Roti Bakar Coklat', sku: 'ROTI01-CKT', stock: 10, price: 18000 }
-];
-
 Page({
   data: {
-    products: [],
-    productsLabel: '',
-    addProductLabel: '',
-    editProductLabel: '',
-    stockLabel: '',
-    showCamera: false
+    products: []
   },
+
   onLoad() {
     this.refreshProducts();
   },
+
   onShow() {
     this.refreshProducts();
   },
+
   refreshProducts() {
-    const productsLabel = t('products');
-    const addProductLabel = t('add_product');
-    const editProductLabel = t('edit_product');
-    const stockLabel = t('stock');
-    let products = load(STORAGE_KEYS.PRODUCTS);
-    if (!products || products.length === 0) {
-      products = mockProducts;
-      save(STORAGE_KEYS.PRODUCTS, products);
-    }
-    // Initialize properties for all products
-    products = products.map(product => ({
+    const products = load(STORAGE_KEYS.PRODUCTS) || [];
+    // Format price for display
+    const formattedProducts = products.map(product => ({
       ...product,
+      formattedPrice: `Rp ${product.price.toLocaleString('id-ID')}`,
       showMenu: false,
-      isEditing: false,
-      formattedPrice: this.formatPrice(product.price)
+      isEditing: false
     }));
-    this.setData({ products, productsLabel, addProductLabel, editProductLabel, stockLabel });
-  },
-  onAddProduct() {
-    my.navigateTo({ url: '/pages/products/addProduct' });
+    this.setData({ products: formattedProducts });
   },
 
-  onScanNote() {
-    my.chooseImage({
-      count: 1,
-      sourceType: ['camera'],
-      success: (res) => {
-        if (res.tempFilePaths && res.tempFilePaths.length > 0) {
-          const imagePath = res.tempFilePaths[0];
-          console.log('Image captured:', imagePath);
-          // Here you can handle the captured image
-          // For example, navigate to a processing page
-          my.navigateTo({
-            url: `/pages/scanNote/scanNote?image=${encodeURIComponent(imagePath)}`
-          });
-        }
-      },
-      fail: (error) => {
-        // Only show error if it's not just the user canceling
-        if (error.error !== 11) {
-          console.error('Camera error:', error);
-          my.showToast({
-            type: 'fail',
-            content: 'Gagal mengambil foto',
-            duration: 2000
-          });
-        }
-      }
+  onAddProduct() {
+    my.navigateTo({
+      url: '/pages/products/addProduct'
     });
   },
+
   toggleEdit(e) {
     const index = e.target.dataset.index;
     const products = this.data.products;
-    const product = products[index];
-
-    if (product.isEditing) {
-      // Save changes
-      save(STORAGE_KEYS.PRODUCTS, products);
-      product.isEditing = false;
-      product.showMenu = false;
-    } else {
-      // Start editing
-      product.isEditing = true;
-    }
-
+    products[index].isEditing = !products[index].isEditing;
+    products[index].showMenu = false;
     this.setData({ products });
   },
 
   onStockChange(e) {
     const index = e.target.dataset.index;
+    const stock = parseInt(e.detail.value) || 0;
     const products = this.data.products;
-    products[index].stock = parseInt(e.detail.value) || 0;
+    products[index].stock = stock;
     this.setData({ products });
-    // Save changes immediately
     save(STORAGE_KEYS.PRODUCTS, products);
   },
 
   onPriceChange(e) {
     const index = e.target.dataset.index;
+    const price = parseFloat(e.detail.value) || 0;
     const products = this.data.products;
-    const price = parseInt(e.detail.value) || 0;
     products[index].price = price;
-    products[index].formattedPrice = this.formatPrice(price);
+    products[index].formattedPrice = `Rp ${price.toLocaleString('id-ID')}`;
     this.setData({ products });
-    // Save changes immediately
     save(STORAGE_KEYS.PRODUCTS, products);
-  },
-
-  showMenu(e) {
-    const index = e.target.dataset.index;
-    const products = this.data.products;
-    
-    // Close any other open menus
-    products.forEach((item, i) => {
-      if (i !== parseInt(index) && item.showMenu) {
-        item.showMenu = false;
-      }
-    });
-    
-    // Toggle menu for the clicked item
-    products[index].showMenu = !products[index].showMenu;
-    
-    this.setData({ products });
-  },
-
-  formatPrice(price) {
-    if (!price || isNaN(price)) return 'Rp 0';
-    
-    // Format the number with thousand separators
-    const formatted = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return `Rp ${formatted}`;
   },
 
   onDeleteProduct(e) {
     const sku = e.target.dataset.sku;
+    const index = this.data.products.findIndex(item => item.sku === sku);
+    const product = this.data.products[index];
     const products = this.data.products.filter(item => item.sku !== sku);
     
+    // Close menu immediately
+    if (index !== -1) {
+      this.data.products[index].showMenu = false;
+      this.setData({ products: this.data.products });
+    }
+
     my.confirm({
-      title: t('confirm_delete'),
-      content: t('confirm_delete_message'),
-      confirmButtonText: t('delete'),
-      cancelButtonText: t('cancel'),
+      title: t('Hapus Produk'),
+      content: `Apakah anda yakin ingin menghapus produk ${product.name}?`,
+      confirmButtonText: t('Ya, hapus!'),
+      confirmColor: '#ef4444',
+      cancelButtonText: t('Batal'),
       success: (result) => {
         if (result.confirm) {
           save(STORAGE_KEYS.PRODUCTS, products);
@@ -154,5 +85,41 @@ Page({
         }
       }
     });
+  },
+
+  showMenu(e) {
+    const index = e.target.dataset.index;
+    const products = this.data.products;
+    
+    products.forEach((item, i) => {
+      if (i !== parseInt(index)) {
+        item.showMenu = false;
+      }
+    });
+    
+    products[index].showMenu = !products[index].showMenu;
+    
+    this.setData({ products });
+  },
+
+  closeAllMenus(e) {
+    if (e && (e.target.className === 'dots' || e.target.dataset.menuItem)) {
+      return;
+    }
+
+    const products = this.data.products;
+    let hasChanges = false;
+
+    products.forEach(item => {
+      if (item.showMenu) {
+        item.showMenu = false;
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      this.setData({ products });
+    }
   }
 });
+
