@@ -5,7 +5,8 @@
     "pages/products/products",
     "pages/products/addProduct",
     "pages/products/editProduct",
-    "pages/sales/sales"
+    "pages/sales/sales",
+    "pages/sales-list/index"
   ],
   "window": {
     "defaultTitle": "UMKM Invoicing"

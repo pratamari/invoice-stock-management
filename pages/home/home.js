@@ -73,6 +73,6 @@ Page({
     my.navigateTo({ url: '/pages/products/products' });
   },
   goToSales() {
-    my.navigateTo({ url: '/pages/sales/sales' });
+    my.navigateTo({ url: '/pages/sales-list/index' });
   },
 });
