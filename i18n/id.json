@@ -54,5 +54,8 @@
   "sales_list_total": "Total Penjualan Hari Ini",
   "sales_list_order_prefix": "Order #",
   "sales_list_add": "Tambah",
-  "sales_list_loading": "Memuat..."
+  "sales_list_loading": "Memuat...",
+  "sales_detail_order": "Order #",
+  "sales_detail_total": "Total Pembayaran",
+  "sales_detail_print": "Cetak Nota"
 }

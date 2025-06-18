@@ -54,5 +54,8 @@
   "sales_list_total": "Today's Total Sales",
   "sales_list_order_prefix": "Order #",
   "sales_list_add": "Add",
-  "sales_list_loading": "Loading..."
+  "sales_list_loading": "Loading...",
+  "sales_detail_order": "Order #",
+  "sales_detail_total": "Total Payment",
+  "sales_detail_print": "Print Receipt"
 }
