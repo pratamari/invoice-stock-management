@@ -23,7 +23,6 @@
   "form_required_fields": "Name, category, and price are required.",
   "product_stock": "Stock",
   "product_stock_placeholder": "Enter stock quantity",
-  "sales": "Sales",
   "confirm": "Confirm",
   "receipt": "Receipt",
   "receipt_no": "Receipt No.",
@@ -50,5 +49,10 @@
   "no_data": "No data available.",
   "no_sales": "No sales yet.",
   "no_products": "No products yet.",
-  "stock_cannot_negative": "Stock cannot be negative."
+  "stock_cannot_negative": "Stock cannot be negative.",
+  "sales_list_title": "Sales List",
+  "sales_list_total": "Today's Total Sales",
+  "sales_list_order_prefix": "Order #",
+  "sales_list_add": "Add",
+  "sales_list_loading": "Loading..."
 }
