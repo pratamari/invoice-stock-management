@@ -86,5 +86,11 @@ Page({
     my.navigateTo({
       url: `/pages/sales-detail/index?id=${receiptNo.split('/')[0]}`
     });
+  },
+
+  onAddSales() {
+    my.navigateTo({
+      url: '/pages/sales-add/index'
+    });
   }
 });

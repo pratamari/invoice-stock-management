@@ -1,0 +1,24 @@
+<view a:if="{{show}}" class="mask" onTap="handleClose">
+  <view class="dialog" catchTap>
+    <view class="dialog-header">
+      <text class="dialog-title">Select Product</text>
+    </view>
+    
+    <view class="dialog-content">
+      <picker
+        onChange="onProductChange"
+        value="{{selectedProductId}}"
+        range="{{products}}"
+        range-key="name">
+        <view class="picker-field">
+          <text>{{selectedProduct ? selectedProduct.name : 'Select a product'}}</text>
+        </view>
+      </picker>
+    </view>
+    
+    <view class="dialog-footer">
+      <button class="btn-cancel" onTap="handleClose">Cancel</button>
+      <button class="btn-confirm" onTap="handleConfirm" disabled="{{!selectedProduct}}">Add</button>
+    </view>
+  </view>
+</view>

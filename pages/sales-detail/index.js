@@ -30,20 +30,15 @@ Page({
   },
 
   loadSalesDetail(id) {
-    // Dummy data for demonstration
-    const products = [
-      { name: 'Product 1', qty: 2, price: 50000, subtotal: 100000 },
-      { name: 'Product 2', qty: 1, price: 75000, subtotal: 75000 }
-    ];
-
+    // For now using dummy data
+    // In real app, fetch order data using orderId
     this.setData({
-      orderNo: id,
-      products: products.map(item => ({
-        ...item,
-        price: formatCurrency(item.price),
-        subtotal: formatCurrency(item.subtotal)
-      })),
-      totalPrice: formatCurrency(products.reduce((sum, item) => sum + item.subtotal, 0))
+      orderNo: id.slice(-4), // Use last 4 digits of order ID
+      products: [
+        { name: 'Product 1', qty: 2, price: 50000, subtotal: 100000 },
+        { name: 'Product 2', qty: 1, price: 75000, subtotal: 75000 }
+      ],
+      totalPrice: formatCurrency(175000)
     });
   },
 
@@ -51,5 +46,12 @@ Page({
     my.showToast({
       content: t('print_coming_soon')
     });
+  },
+
+  onBackPress() {
+    my.redirectTo({
+      url: '/pages/sales-list/index'
+    });
+    return true;
   }
 });

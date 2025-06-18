@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "product-select-dialog": "/components/product-select-dialog/index"
+  }
+}
