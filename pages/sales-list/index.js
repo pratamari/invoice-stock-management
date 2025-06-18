@@ -38,7 +38,7 @@ Page({
   },
 
   onAddSales() {
-    console.log('tap');
+    my.navigateTo({ url: '/pages/sales/sales' });
   },
 
   generateDummyData() {
