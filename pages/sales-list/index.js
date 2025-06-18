@@ -1,5 +1,9 @@
 const { t } = require('../../utils/i18n');
 
+const formatCurrency = (amount) => {
+  return amount.toLocaleString('id-ID');
+};
+
 Page({
   data: {
     salesList: [],
@@ -36,14 +40,20 @@ Page({
   generateDummyData() {
     this.setData({ loading: true });
     
-    const dummyData = Array.from({ length: 10 }, (_, i) => ({
-      receiptNo: `${i + 1}/INV/2024`,
-      totalPrice: Math.floor(Math.random() * 1000000).toLocaleString()
-    }));
+    const dummyData = Array.from({ length: 10 }, (_, i) => {
+      const price = Math.floor(Math.random() * 1000000);
+      return {
+        receiptNo: `${i + 1}/INV/2024`,
+        totalPrice: formatCurrency(price)
+      };
+    });
+
+    const totalSales = dummyData.reduce((sum, item) => 
+      sum + parseInt(item.totalPrice.replace(/[.,]/g, '')), 0);
 
     this.setData({
       salesList: dummyData,
-      totalSales: '5,000,000',
+      totalSales: formatCurrency(totalSales),
       loading: false
     });
   },
@@ -55,10 +65,13 @@ Page({
     
     setTimeout(() => {
       const currentTotal = this.data.salesList.length;
-      const newData = Array.from({ length: this.data.pageSize }, (_, i) => ({
-        receiptNo: `${currentTotal + i + 1}/INV/2024`,
-        totalPrice: Math.floor(Math.random() * 1000000).toLocaleString()
-      }));
+      const newData = Array.from({ length: this.data.pageSize }, (_, i) => {
+        const price = Math.floor(Math.random() * 1000000);
+        return {
+          receiptNo: `${currentTotal + i + 1}/INV/2024`,
+          totalPrice: formatCurrency(price)
+        };
+      });
       
       this.setData({
         salesList: [...this.data.salesList, ...newData],
@@ -66,5 +79,12 @@ Page({
         hasMore: (currentTotal + newData.length) < 100
       });
     }, 500);
+  },
+
+  onSalesItemTap(e) {
+    const { receiptNo } = e.target.dataset;
+    my.navigateTo({
+      url: `/pages/sales-detail/index?id=${receiptNo.split('/')[0]}`
+    });
   }
 });

@@ -13,7 +13,7 @@
   <view class="content-area">
     <scroll-view class="sales-list" scroll-y="{{true}}" onScrollToLower="loadMoreSales" lower-threshold="50">
       <block a:for="{{salesList}}" a:key="receiptNo">
-        <view class="sales-item">
+        <view class="sales-item" onTap="onSalesItemTap" data-receipt-no="{{item.receiptNo}}">
           <text class="order-no">{{orderPrefix}}{{item.receiptNo.split('/')[0]}}</text>
           <text class="amount">Rp {{item.totalPrice}}</text>
         </view>
