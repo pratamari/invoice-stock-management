@@ -33,6 +33,10 @@ Page({
     this.generateDummyData();
   },
 
+  onAddSales() {
+    console.log('tap');
+  },
+
   generateDummyData() {
     this.setData({ loading: true });
     
