@@ -9,7 +9,7 @@
   </view>
 </view>
   <view class="home-cards">
-    <view class="home-card sales">
+    <view class="home-card sales" onTap="goToSalesList">
   <view class="card-content-row">
     <view class="card-icon-bg">
       <image class="card-icon" src="/assets/icon_sales.png" mode="aspectFit" />

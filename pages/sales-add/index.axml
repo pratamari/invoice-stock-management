@@ -5,26 +5,22 @@
 
   <scroll-view class="content" scroll-y="{{true}}">
     <view class="products-list">
-      <block a:for="{{products}}" a:key="id">
+      <block a:for="{{availableProducts}}" a:key="sku">
         <view class="product-item">
           <view class="product-info">
             <text class="product-name">{{item.name}}</text>
             <text class="product-price">Rp {{item.formattedPrice}}</text>
           </view>
-          <view class="product-actions">
+          <view class="qty-control">
+            <button class="qty-btn" onTap="onDecreaseQty" data-sku="{{item.sku}}">-</button>
             <input 
-              class="qty-field" 
+              class="qty-input" 
               type="number" 
-              value="{{item.qty || 1}}" 
-              placeholder="{{qtyPlaceholder}}"
+              value="{{item.qty || 0}}" 
               onInput="onQtyChange"
-              data-id="{{item.id}}"
+              data-sku="{{item.sku}}"
             />
-            <button 
-              class="remove-button" 
-              onTap="onRemoveProduct" 
-              data-id="{{item.id}}"
-            >×</button>
+            <button class="qty-btn" onTap="onIncreaseQty" data-sku="{{item.sku}}">+</button>
           </view>
         </view>
       </block>
@@ -32,13 +28,6 @@
   </scroll-view>
 
   <view class="actions">
-    <button class="add-product-button" onTap="onAddProduct">{{addProductLabel}}</button>
     <button class="save-button" onTap="onPay">{{saveLabel}}</button>
   </view>
-  <product-select-dialog
-    show="{{showProductDialog}}"
-    products="{{availableProducts}}"
-    onClose="onDialogClose"
-    onConfirm="onProductSelected"
-  />
 </view>

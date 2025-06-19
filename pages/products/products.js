@@ -14,8 +14,16 @@ Page({
       const products = loadProducts();
       console.log('Debug - Raw storage:', products);
       
-      // Ensure we always set a valid array
-      this.setData({ products });
+      // Format products for display
+      const formattedProducts = products.map(p => ({
+        ...p,
+        formattedPrice: `Rp ${p.price.toLocaleString('id-ID')}`,
+        formattedStock: p.stock,
+        showMenu: false,
+        isEditing: false
+      }));
+      
+      this.setData({ products: formattedProducts });      
       console.log('Debug - Final products:', this.data.products);
     } catch (e) {
       console.error('Debug - Error loading products:', e);

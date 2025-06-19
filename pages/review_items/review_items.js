@@ -34,16 +34,6 @@ Page({
   handleSubmit() {
     console.log('Debug - Current items:', this.data.items);
 
-    const products = this.data.items.map(item => createProduct({
-      sku: generateSku(item.name, 'SCAN'),
-      name: item.name,
-      category: 'Scan',
-      stock: item.quantity,
-      price: item.price
-    }));
-
-    console.log('Debug - Mapped products:', products);
-
     // Get existing products
     let existingProducts = [];
     try {
@@ -56,22 +46,44 @@ Page({
       }
     } catch (e) {
       console.error('Debug - Error getting products:', e);
+      existingProducts = [];
     }
 
-    // Add new products
-    const updatedProducts = existingProducts.concat(products);
+    const newProducts = [];
+    const updatedProducts = [...existingProducts];
+
+    // Process each item
+    this.data.items.forEach(item => {
+      // Find existing product by name
+      const existingIndex = existingProducts.findIndex(
+        p => p.name.toLowerCase() === item.name.toLowerCase()
+      );
+
+      if (existingIndex >= 0) {
+        // Update existing product quantity
+        updatedProducts[existingIndex] = {
+          ...updatedProducts[existingIndex],
+          stock: (updatedProducts[existingIndex].stock || 0) + item.quantity
+        };
+      } else {
+        // Create new product
+        newProducts.push(createProduct({
+          sku: generateSku(item.name, 'SCAN'),
+          name: item.name,
+          category: 'Scan',
+          stock: item.quantity,
+          price: item.price
+        }));
+      }
+    });
+
+    // Add new products to updated list
+    updatedProducts.push(...newProducts);
     console.log('Debug - Updated products:', updatedProducts);
 
     try {
       saveProducts(updatedProducts);
       console.log('Debug - Products saved successfully');
-
-      // Refresh the products page
-      const pages = getCurrentPages();
-      const productsPage = pages.find(p => p.route === 'pages/products/products');
-      if (productsPage) {
-        productsPage.loadProducts(); // This will refresh the products list
-      }
 
       my.showToast({
         type: 'success',
@@ -89,11 +101,6 @@ Page({
         content: 'Failed to save products'
       });
     }
-
-    // Navigate back to products page
-    my.navigateBack({
-      delta: 2  // Go back 2 pages (review_items -> scan -> products)
-    });
   },
 
   handleCancel() {
