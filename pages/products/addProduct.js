@@ -11,6 +11,7 @@ Page({
       name: '',
       category: '',
       price: '',
+      stock: ''
     },
     categories: [],
     filteredCategories: [],
@@ -20,11 +21,13 @@ Page({
     productNameLabel: '',
     productCategoryLabel: '',
     productPriceLabel: '',
+    productStokLabel: '',
     saveLabel: '',
     cancelLabel: '',
     productNamePlaceholder: '',
     productCategoryPlaceholder: '',
-    productPricePlaceholder: ''
+    productPricePlaceholder: '',
+    productStokPlaceholder: ''
   },
 
   onLoad() {
@@ -33,17 +36,19 @@ Page({
       productNameLabel: 'Nama Produk',
       productCategoryLabel: 'Kategori Produk',
       productPriceLabel: 'Harga Produk',
+      productStokLabel: 'Stok',
       saveLabel: 'Simpan',
       cancelLabel: 'Batal',
       productNamePlaceholder: 'Nama Produk',
       productCategoryPlaceholder: 'Pilih Kategori',
       productPricePlaceholder: 'Harga Produk',
+      productStokPlaceholder: 'Stok Barang',
       categories: categories
     });
   },
 
   onSubmitAddProduct(e) {
-    const { name, category, price } = e.detail.value;
+    const { name, category, price, stock } = e.detail.value;
     // Validation
     if (!name || !category || !price) {
       my.alert({
@@ -62,16 +67,16 @@ Page({
       return;
     }
 
-    const newProduct = createProduct({
-      sku: generateSku(name, category),
+    // Create product with stock
+    const product = createProduct({
       name,
       category,
-      price,
-      stock: 0
+      price: parseFloat(price),
+      stock: stock ? parseInt(stock) : 0
     });
 
     let products = loadProducts();
-    products.unshift(newProduct);
+    products.unshift(product);
     saveProducts(products);
     my.navigateBack();
   },

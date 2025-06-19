@@ -24,6 +24,9 @@ Page({
   },
 
   onLoad() {
+    this.setData({
+      products: []
+    });
     this.loadProducts();
   },
 
@@ -35,8 +38,14 @@ Page({
   refreshProducts() {
     // Load and standardize products
     const products = loadProducts();
-    console.log('Debug - Formatted products:', products);
-    this.setData({ products });
+    // Initialize UI state for each product
+    const formattedProducts = products.map(product => ({
+      ...product,
+      showMenu: false,
+      isEditing: false
+    }));
+    console.log('Debug - Formatted products:', formattedProducts);
+    this.setData({ products: formattedProducts });
   },
 
   onAddProduct() {
@@ -100,37 +109,72 @@ Page({
     });
   },
 
-  showMenu(e) {
-    const index = e.target.dataset.index;
-    const products = this.data.products;
-    
-    products.forEach((item, i) => {
-      if (i !== parseInt(index)) {
-        item.showMenu = false;
-      }
-    });
-    
-    products[index].showMenu = !products[index].showMenu;
-    
-    this.setData({ products });
+  menuTap() {
+    // Prevent menu close when clicking inside menu
   },
 
-  closeAllMenus(e) {
-    if (e && (e.target.className === 'dots' || e.target.dataset.menuItem)) {
+  showMenu(e) {
+    const index = parseInt(e.target.dataset.index);
+    if (isNaN(index)) return;
+
+    const products = [...this.data.products];
+    const currentProduct = products[index];
+    
+    // Close all other menus first
+    products.forEach((item, i) => {
+      if (i !== index) item.showMenu = false;
+    });
+    
+    // Then toggle current menu
+    currentProduct.showMenu = !currentProduct.showMenu;
+    
+    this.setData({ products });
+
+    // Add global click listener to close menu
+    if (currentProduct.showMenu) {
+      my.on('tap', this.handleGlobalTap.bind(this));
+    }
+  },
+
+  handleGlobalTap(e) {
+    const target = e.target || {};
+    const className = target.className || '';
+    
+    // Don't close if clicking menu elements
+    if (className.includes('dots') || 
+        className.includes('menu') || 
+        className.includes('action-menu')) {
       return;
     }
 
-    const products = this.data.products;
-    let hasChanges = false;
+    // Close all menus
+    const products = [...this.data.products];
+    products.forEach(item => item.showMenu = false);
+    this.setData({ products });
 
-    products.forEach(item => {
-      if (item.showMenu) {
-        item.showMenu = false;
-        hasChanges = true;
-      }
-    });
+    // Remove global listener
+    my.off('tap', this.handleGlobalTap);
+  },
 
-    if (hasChanges) {
+  closeAllMenus(e) {
+    // Skip if the click is on menu elements
+    const target = e.target || {};
+    const className = target.className || '';
+    
+    if (className.includes('dots') || 
+        className.includes('menu-wrapper') || 
+        className.includes('action-menu') || 
+        className.includes('menu-item') || 
+        className.includes('menu-text')) {
+      return;
+    }
+
+    // Close all menus
+    const products = [...this.data.products];
+    const hasOpenMenu = products.some(item => item.showMenu);
+    
+    if (hasOpenMenu) {
+      products.forEach(item => item.showMenu = false);
       this.setData({ products });
     }
   },
@@ -140,13 +184,18 @@ Page({
       count: 1,
       sourceType: ['camera', 'album'],
       success: (res) => {
-        this.uploadImage(res.tempFilePaths[0]);
+        if (res.tempFilePaths && res.tempFilePaths.length > 0) {
+          this.uploadImage(res.tempFilePaths[0]);
+        }
       },
       fail: (error) => {
-        my.alert({
-          title: 'Error',
-          content: 'Gagal mengambil gambar: ' + error.errorMessage
-        });
+        // Only show error if it's not a user cancellation
+        if (error.error !== 10 && error.error !== 11) {
+          my.alert({
+            title: 'Error',
+            content: 'Gagal mengambil gambar: ' + error.errorMessage
+          });
+        }
       }
     });
   },

@@ -16,24 +16,20 @@ const { STORAGE_KEYS, save, load } = require('./storage');
 /**
  * Creates a standardized product object
  */
-function createProduct({
-  sku,
-  name,
-  category,
-  stock = 0,
-  price = 0,
-  showMenu = false,
-  isEditing = false
-}) {
+function createProduct(data = {}) {
+  const stock = parseFloat(data.stock || data.quantity || 0);
+  const price = parseFloat(data.price || 0);
+  
   return {
-    sku,
-    name,
-    category,
-    stock: parseFloat(stock) || 0,
-    price: parseFloat(price) || 0,
-    formattedPrice: formatPrice(parseFloat(price) || 0),
-    showMenu,
-    isEditing
+    sku: data.sku || generateSku(data.name || '', data.category || ''),
+    name: data.name || '',
+    category: data.category || '',
+    stock,
+    price,
+    formattedPrice: formatPrice(price),
+    formattedStock: stock,
+    showMenu: false,
+    isEditing: false
   };
 }
 

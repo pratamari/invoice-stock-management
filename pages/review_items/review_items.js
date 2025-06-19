@@ -34,54 +34,84 @@ Page({
   handleSubmit() {
     console.log('Debug - Current items:', this.data.items);
 
-    const products = this.data.items.map(item => createProduct({
-      sku: generateSku(item.name, 'SCAN'),
-      name: item.name,
-      category: 'Scan',
-      stock: item.quantity,
-      price: item.price
-    }));
-
-    console.log('Debug - Mapped products:', products);
-
     // Get existing products
     let existingProducts = [];
     try {
       existingProducts = loadProducts();
-      console.log('Debug - Existing products:', existingProducts);
-      
       if (!Array.isArray(existingProducts)) {
         console.warn('Debug - Products not an array, resetting');
         existingProducts = [];
       }
     } catch (e) {
       console.error('Debug - Error getting products:', e);
+      existingProducts = [];
     }
 
-    // Add new products
-    const updatedProducts = existingProducts.concat(products);
-    console.log('Debug - Updated products:', updatedProducts);
+    // Process each scanned item
+    const updatedProducts = [...existingProducts];
+    const newProducts = [];
+
+    this.data.items.forEach(item => {
+      // Try to find existing product by name (case-insensitive)
+      const existingProduct = updatedProducts.find(
+        p => p.name.toLowerCase() === item.name.toLowerCase()
+      );
+
+      if (existingProduct) {
+        // Update existing product quantity
+        existingProduct.stock = (parseFloat(existingProduct.stock) || 0) + (parseFloat(item.quantity) || 0);
+        console.log(`Debug - Updated existing product ${existingProduct.name}, new stock: ${existingProduct.stock}`);
+      } else {
+        // Create new product
+        const newProduct = createProduct({
+          sku: generateSku(item.name, 'SCAN'),
+          name: item.name,
+          category: 'Scan',
+          stock: item.quantity,
+          price: item.price
+        });
+        newProducts.push(newProduct);
+        updatedProducts.push(newProduct);
+        console.log(`Debug - Created new product: ${newProduct.name}`);
+      }
+    });
 
     try {
+      // Save all products
       saveProducts(updatedProducts);
       console.log('Debug - Products saved successfully');
 
-      // Refresh the products page
-      const pages = getCurrentPages();
-      const productsPage = pages.find(p => p.route === 'pages/products/products');
-      if (productsPage) {
-        productsPage.loadProducts(); // This will refresh the products list
-      }
+      // Show success message with summary
+      const message = newProducts.length > 0 ?
+        `Added ${newProducts.length} new products and updated ${this.data.items.length - newProducts.length} existing products` :
+        `Updated ${this.data.items.length} existing products`;
 
       my.showToast({
         type: 'success',
-        content: 'Products saved successfully'
+        content: message
       });
 
-      // Navigate back
-      my.navigateBack({
-        delta: 2
-      });
+      // Refresh products page if it exists
+      const pages = getCurrentPages();
+      const productsPage = pages.find(p => p.route === 'pages/products/products');
+      if (productsPage) {
+        productsPage.loadProducts();
+      }
+
+      // Navigate back to products page
+      const currentPages = getCurrentPages();
+      const productsPageIndex = currentPages.findIndex(p => p.route === 'pages/products/products');
+      
+      if (productsPageIndex >= 0) {
+        // Calculate how many pages to go back to reach products page
+        const delta = currentPages.length - productsPageIndex - 1;
+        my.navigateBack({ delta });
+      } else {
+        // If products page not found in stack, redirect to it
+        my.redirectTo({
+          url: '/pages/products/products'
+        });
+      }
     } catch (e) {
       console.error('Debug - Error saving products:', e);
       my.showToast({
@@ -89,11 +119,6 @@ Page({
         content: 'Failed to save products'
       });
     }
-
-    // Navigate back to products page
-    my.navigateBack({
-      delta: 2  // Go back 2 pages (review_items -> scan -> products)
-    });
   },
 
   handleCancel() {
