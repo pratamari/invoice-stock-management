@@ -24,8 +24,7 @@ Page({
     this.setData({
       pageTitle: t('sales_add_title'),
       addProductLabel: t('sales_add_product'),
-      payLabel: t('sales_add_pay'),
-      qtyPlaceholder: t('sales_add_qty_placeholder')
+      saveLabel: t('sales_add_save')
     });
   },
 

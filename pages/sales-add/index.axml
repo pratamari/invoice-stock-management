@@ -33,7 +33,7 @@
 
   <view class="actions">
     <button class="add-product-button" onTap="onAddProduct">{{addProductLabel}}</button>
-    <button class="pay-button" onTap="onPay">{{payLabel}}</button>
+    <button class="save-button" onTap="onPay">{{saveLabel}}</button>
   </view>
   <product-select-dialog
     show="{{showProductDialog}}"

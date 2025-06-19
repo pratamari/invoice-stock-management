@@ -61,5 +61,6 @@
   "sales_add_title": "Tambah Penjualan",
   "sales_add_product": "Tambah Produk",
   "sales_add_pay": "Bayar",
-  "sales_add_qty_placeholder": "1"
+  "sales_add_qty_placeholder": "1",
+  "sales_add_save": "Simpan"
 }
