@@ -1,0 +1,121 @@
+.page {
+  padding: 16px;
+  background: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 24px;
+  padding: 8px 0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+.items-container {
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.item-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.item-number {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-container.half {
+  flex: 1;
+}
+
+.input-row {
+  display: flex;
+  gap: 16px;
+}
+
+.label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+  background: #fff;
+  color: #333;
+}
+
+.input:focus {
+  border-color: #1677ff;
+  outline: none;
+}
+
+.footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  position: sticky;
+  bottom: 0;
+  background: #f5f5f5;
+}
+
+.btn-primary, .btn-secondary {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.btn-primary {
+  background: #1677ff;
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #666;
+  border: 1px solid #ddd;
+}

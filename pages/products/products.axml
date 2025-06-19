@@ -1,14 +1,57 @@
-<view class="container">
-  <view class="header">{{productsLabel}}</view>
-  <button onTap="onAddProduct">{{addProductLabel}}</button>
+<view class="page" onTap="closeAllMenus">
+  <text class="title">Products</text>
+  <view class="button-group">
+    <button class="action-btn" onTap="onAddProduct">Tambah</button>
+    <button class="action-btn" onTap="onScanNote">Pindai Nota</button>
+  </view>
+
   <view class="product-list">
     <block a:for="{{products}}" a:key="sku">
-      <view class="product-item">
-        <view class="product-info">
-          <text>{{item.name}} ({{item.sku}})</text>
-          <text>{{stockLabel}}: {{item.stock}}</text>
+      <view class="product-card">
+        <view class="product-header">
+          <view class="name-wrapper">
+            <view class="name-group">
+              <text class="product-name">{{item.name}}</text>
+              <text class="product-sku">SKU: {{item.sku}}</text>
+            </view>
+            <view class="menu-wrapper">
+              <text class="dots" catchTap="showMenu" data-index="{{index}}">⋮</text>
+              <view class="action-menu" a:if="{{item.showMenu}}">
+                <view class="menu-item" catchTap="toggleEdit" data-index="{{index}}" data-menu-item="true">
+                  <text class="menu-text">{{item.isEditing ? 'Simpan' : 'Ubah'}}</text>
+                </view>
+                <view class="menu-item" catchTap="onDeleteProduct" data-sku="{{item.sku}}" data-menu-item="true">
+                  <text class="menu-text">Hapus</text>
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
-        <button class="edit-btn" size="mini" onTap="onEditProduct" data-sku="{{item.sku}}">{{editProductLabel}}</button>
+
+        <view class="row">
+          <text class="row-label">Jumlah</text>
+          <view class="row-value-group">
+            <block a:if="{{item.isEditing}}">
+              <input class="value-input" type="number" value="{{item.stock}}" onInput="onStockChange" data-index="{{index}}" />
+            </block>
+            <block a:else>
+              <text class="row-value">{{item.stock}}</text>
+            </block>
+          </view>
+        </view>
+
+        <view class="row">
+          <text class="row-label">Harga</text>
+          <view class="row-value-group">
+            <block a:if="{{item.isEditing}}">
+              <input class="value-input" type="number" value="{{item.price}}" onInput="onPriceChange" data-index="{{index}}" />
+            </block>
+            <block a:else>
+              <text class="row-value">{{item.formattedPrice}}</text>
+            </block>
+          </view>
+        </view>
+        </view>
       </view>
     </block>
   </view>

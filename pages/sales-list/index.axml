@@ -10,8 +10,8 @@
     </view>
   </view>
   
-  <view class="content-area">
-    <scroll-view class="sales-list" scroll-y="{{true}}" onScrollToLower="loadMoreSales" lower-threshold="50">
+  <scroll-view class="content" scroll-y="{{true}}" onScrollToLower="loadMoreSales" lower-threshold="50">
+    <view class="products-list">
       <block a:for="{{salesList}}" a:key="receiptNo">
         <view class="sales-item" onTap="onSalesItemTap" data-receipt-no="{{item.receiptNo}}">
           <view class="sales-info">
@@ -25,8 +25,10 @@
       <view class="loading" a:if="{{loading}}">
         <text>{{loadingText}}</text>
       </view>
-    </scroll-view>
+    </view>
+  </scroll-view>
+
+  <view class="actions">
+    <button class="add-button" onTap="onAddSales">{{addButtonLabel}}</button>
   </view>
-  
-  <button class="add-button" onTap="onAddSales">{{addButtonLabel}}</button>
 </view>
