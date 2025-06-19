@@ -40,7 +40,7 @@ Page({
   },
 
   onAddSales() {
-    my.navigateTo({ url: '/pages/sales/sales' });
+    my.navigateTo({ url: '/pages/sales-add/index' });
   },
 
   generateDummyData() {

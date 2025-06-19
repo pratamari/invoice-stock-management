@@ -1,19 +1,24 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background: #f5f5f5;
+  width: 100vw;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 8px 60px 8px;
+  box-sizing: border-box;
+  background: #f7f7f7;
+  min-height: 100vh;
 }
 
 .header {
-  padding: 16px;
-  background: #fff;
-  margin-bottom: 12px;
+  padding: 16px 0 8px 0;
+  background: #f7f7f7;
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .content {
@@ -100,14 +105,15 @@
   border-radius: 4px;
 }
 
-.actions {
+.sticky-footer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px;
+  left: 0; right: 0; bottom: 0;
+  width: 100vw;
   background: #fff;
-  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
   z-index: 100;
   display: flex;
   gap: 12px;
