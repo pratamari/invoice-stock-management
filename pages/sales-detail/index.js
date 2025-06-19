@@ -1,4 +1,5 @@
 const { t } = require('../../utils/i18n');
+const { getSales } = require('../../utils/storage');
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('id-ID');
@@ -30,26 +31,35 @@ Page({
   },
 
   loadSalesDetail(id) {
-    // Dummy data for demonstration
-    const products = [
-      { name: 'Product 1', qty: 2, price: 50000, subtotal: 100000 },
-      { name: 'Product 2', qty: 1, price: 75000, subtotal: 75000 }
-    ];
-
-    this.setData({
-      orderNo: id,
-      products: products.map(item => ({
-        ...item,
-        price: formatCurrency(item.price),
-        subtotal: formatCurrency(item.subtotal)
-      })),
-      totalPrice: formatCurrency(products.reduce((sum, item) => sum + item.subtotal, 0))
-    });
+    const salesData = getSales();
+    const sale = salesData.find(s => s.orderId === parseInt(id));
+    
+    if (sale) {
+      const date = new Date(sale.transactionDate);
+      this.setData({
+        orderNo: sale.orderId,
+        transactionDate: `${date.toLocaleDateString('id-ID')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`,
+        products: sale.products.map(p => ({
+          name: p.name,
+          qty: p.qty,
+          price: formatCurrency(p.price),
+          subtotal: formatCurrency(p.price * p.qty)
+        })),
+        totalPrice: formatCurrency(sale.totalPayment)
+      });
+    }
   },
 
   onPrintReceipt() {
     my.showToast({
       content: t('print_coming_soon')
     });
+  },
+
+  onBackPress() {
+    my.redirectTo({
+      url: '/pages/sales-list/index'
+    });
+    return true;
   }
 });

@@ -57,5 +57,9 @@
   "sales_list_loading": "Loading...",
   "sales_detail_order": "Order #",
   "sales_detail_total": "Total Payment",
-  "sales_detail_print": "Print Receipt"
+  "sales_detail_print": "Print Receipt",
+  "sales_add_title": "Add Sale",
+  "sales_add_product": "Add Product",
+  "sales_add_pay": "Pay",
+  "sales_add_qty_placeholder": "0"
 }

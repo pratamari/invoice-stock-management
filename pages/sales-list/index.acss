@@ -109,3 +109,19 @@
   align-items: center;
   justify-content: center;
 }
+
+.sales-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sales-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.total-items {
+  font-size: 12px;
+  color: #666;
+}

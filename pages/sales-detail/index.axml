@@ -1,6 +1,9 @@
 <view class="container">
   <view class="header">
-    <text class="title">{{orderPrefix}}{{orderNo}}</text>
+    <view class="header-content">
+      <text class="title">{{orderPrefix}}{{orderNo}}</text>
+      <text class="transaction-date">{{transactionDate}}</text>
+    </view>
   </view>
 
   <scroll-view class="content" scroll-y="{{true}}">

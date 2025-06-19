@@ -1,4 +1,5 @@
 const { t } = require('../../utils/i18n');
+const { getSales } = require('../../utils/storage');
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('id-ID');
@@ -21,6 +22,7 @@ Page({
 
   onShow() {
     this.setLabels();
+    this.loadInitialData(); // Add this line to reload data
   },
 
   setLabels() {
@@ -43,52 +45,40 @@ Page({
 
   generateDummyData() {
     this.setData({ loading: true });
+    const salesData = getSales();
+    const today = new Date().toDateString();
     
-    const dummyData = Array.from({ length: 10 }, (_, i) => {
-      const price = Math.floor(Math.random() * 1000000);
-      return {
-        receiptNo: `${i + 1}/INV/2024`,
-        totalPrice: formatCurrency(price)
-      };
-    });
-
-    const totalSales = dummyData.reduce((sum, item) => 
-      sum + parseInt(item.totalPrice.replace(/[.,]/g, '')), 0);
+    const todaysSales = salesData.reduce((sum, sale) => {
+      const saleDate = new Date(sale.transactionDate).toDateString();
+      return saleDate === today ? sum + sale.totalPayment : sum;
+    }, 0);
 
     this.setData({
-      salesList: dummyData,
-      totalSales: formatCurrency(totalSales),
-      loading: false
-    });
-  },
-
-  loadMoreSales() {
-    if (!this.data.hasMore || this.data.loading) return;
-    
-    this.setData({ loading: true });
-    
-    setTimeout(() => {
-      const currentTotal = this.data.salesList.length;
-      const newData = Array.from({ length: this.data.pageSize }, (_, i) => {
-        const price = Math.floor(Math.random() * 1000000);
+      salesList: salesData.map(sale => {
+        const date = new Date(sale.transactionDate);
         return {
-          receiptNo: `${currentTotal + i + 1}/INV/2024`,
-          totalPrice: formatCurrency(price)
+          receiptNo: `${sale.orderId}/INV/2024`,
+          totalPrice: formatCurrency(sale.totalPayment),
+          date: `${date.toLocaleDateString('id-ID')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`,
+          totalItems: sale.totalProduct
         };
-      });
-      
-      this.setData({
-        salesList: [...this.data.salesList, ...newData],
-        loading: false,
-        hasMore: (currentTotal + newData.length) < 100
-      });
-    }, 500);
+      }),
+      totalSales: formatCurrency(todaysSales),
+      loading: false,
+      hasMore: false
+    });
   },
 
   onSalesItemTap(e) {
     const { receiptNo } = e.target.dataset;
     my.navigateTo({
       url: `/pages/sales-detail/index?id=${receiptNo.split('/')[0]}`
+    });
+  },
+
+  onAddSales() {
+    my.navigateTo({
+      url: '/pages/sales-add/index'
     });
   }
 });

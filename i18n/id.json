@@ -57,5 +57,9 @@
   "sales_list_loading": "Memuat...",
   "sales_detail_order": "Order #",
   "sales_detail_total": "Total Pembayaran",
-  "sales_detail_print": "Cetak Nota"
+  "sales_detail_print": "Cetak Nota",
+  "sales_add_title": "Tambah Penjualan",
+  "sales_add_product": "Tambah Produk",
+  "sales_add_pay": "Bayar",
+  "sales_add_qty_placeholder": "1"
 }
