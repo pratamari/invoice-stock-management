@@ -35,7 +35,7 @@
               <input class="value-input" type="number" value="{{item.stock}}" onInput="onStockChange" data-index="{{index}}" />
             </block>
             <block a:else>
-              <text class="row-value">{{item.stock}}</text>
+              <text class="row-value">{{item.formattedStock}}</text>
             </block>
           </view>
         </view>

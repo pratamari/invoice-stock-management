@@ -7,24 +7,54 @@ Page({
     products: []
   },
 
+  loadProducts() {
+    console.log('Debug - Loading products');
+    try {
+      const products = load(STORAGE_KEYS.PRODUCTS);
+      console.log('Debug - Raw storage:', products);
+      
+      // Ensure we always set a valid array
+      this.setData({ 
+        products: Array.isArray(products) ? products : [] 
+      });
+      console.log('Debug - Final products:', this.data.products);
+    } catch (e) {
+      console.error('Debug - Error loading products:', e);
+      this.setData({ products: [] });
+    }
+  },
+
   onLoad() {
-    this.refreshProducts();
+    this.loadProducts();
   },
 
   onShow() {
-    this.refreshProducts();
+    // Refresh products list when page becomes visible
+    this.loadProducts();
   },
 
   refreshProducts() {
-    const products = load(STORAGE_KEYS.PRODUCTS) || [];
-    // Format price for display
-    const formattedProducts = products.map(product => ({
-      ...product,
-      formattedPrice: `Rp ${product.price.toLocaleString('id-ID')}`,
-      showMenu: false,
-      isEditing: false
-    }));
+    // Load products first
+    this.loadProducts();
+    
+    // Format products for display
+    const formattedProducts = this.data.products.map(product => {
+      // Normalize stock/quantity field
+      const stockAmount = product.stock || product.quantity || 0;
+      
+      return {
+        ...product,
+        stock: stockAmount, // Normalize to use stock consistently
+        formattedPrice: `Rp ${(product.price || 0).toLocaleString('id-ID')}`,
+        formattedStock: stockAmount,
+        showMenu: false,
+        isEditing: false
+      };
+    });
+    
     this.setData({ products: formattedProducts });
+    // Save the normalized data back to storage
+    save(STORAGE_KEYS.PRODUCTS, formattedProducts);
   },
 
   onAddProduct() {
@@ -46,6 +76,7 @@ Page({
     const stock = parseInt(e.detail.value) || 0;
     const products = this.data.products;
     products[index].stock = stock;
+    products[index].formattedStock = stock;
     this.setData({ products });
     save(STORAGE_KEYS.PRODUCTS, products);
   },
@@ -214,17 +245,88 @@ Page({
         throw new Error('Failed to parse upload response');
       }
 
-      // For now, just show success message
+      if (!uploadData || !uploadData.id) {
+        throw new Error('No file ID in upload response');
+      }
+
+      const fileId = uploadData.id;
+      console.log('Debug - File ID:', fileId);
+
+      // Second API - Process receipt
+      my.showLoading({
+        content: 'Processing receipt...'
+      });
+
+      const processRequestData = {
+        inputs: {
+          image: {
+            transfer_method: 'local_file',
+            upload_file_id: fileId,
+            type: 'image'
+          }
+        },
+        response_mode: 'blocking',
+        user: user
+      };
+
+      console.log('Debug - Process Request:', processRequestData);
+
+      const processRes = await my.request({
+        url: `${baseUrl}/workflows/run`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        data: processRequestData
+      });
+
+      console.log('Debug - Process Response:', processRes);
+
+      if (!processRes.data) {
+        throw new Error('No data from process API');
+      }
+
+      const result = processRes.data;
+      if (!result.data || !result.data.outputs || !result.data.outputs.Extracted || !result.data.outputs.Extracted.items) {
+        console.error('Invalid response structure:', result);
+        throw new Error('Invalid response structure from process API');
+      }
+
+      const items = result.data.outputs.Extracted.items;
+      if (!Array.isArray(items)) {
+        throw new Error('Items is not an array');
+      }
+
+      console.log('Debug - Extracted Items:', items);
+
+      // Map API fields to our field names
+      const mappedItems = items.map(item => ({
+        name: item.name || '',
+        quantity: item.qty || 0,
+        price: item.price ? item.price.replace(/[.,]/g, '') : 0 // Remove dots and commas
+      }));
+
+      console.log('Debug - Mapped Items:', mappedItems);
+
+      // Navigate to review page
+      my.hideLoading();
+      my.navigateTo({
+        url: `/pages/review_items/review_items?items=${encodeURIComponent(JSON.stringify(mappedItems))}`,
+        fail: (error) => {
+          console.error('Navigation error:', error);
+          my.alert({
+            title: 'Error',
+            content: 'Failed to open review page'
+          });
+        }
+      });
       my.hideLoading();
       my.showToast({
         type: 'success',
-        content: 'Upload successful!'
+        content: 'Receipt processed successfully!'
       });
-
-      // Comment out second API for now
-      /*
-      // Second API code here...
-      */
+      my.navigateBack();
 
     } catch (error) {
       console.error('Error details:', error);
