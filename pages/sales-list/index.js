@@ -36,6 +36,22 @@ Page({
   },
 
   loadInitialData() {
+    this.generateDummyData();
+  },
+
+  onAddSales() {
+    my.navigateTo({ url: '/pages/sales/sales' });
+  },
+
+  generateDummyData() {
+    this.setData({ loading: true });
+    const salesData = getSales();
+    const today = new Date().toDateString();
+    
+    const todaysSales = salesData.reduce((sum, sale) => {
+      const saleDate = new Date(sale.transactionDate).toDateString();
+      return saleDate === today ? sum + sale.totalPayment : sum;
+    }, 0);
     try {
       const salesData = getSales() || [];
       const today = new Date().toDateString();
