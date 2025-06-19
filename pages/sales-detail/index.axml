@@ -28,4 +28,54 @@
   <view class="actions">
     <button class="print-button" onTap="onPrintReceipt">{{printLabel}}</button>
   </view>
+  
+<!-- Receipt Modal: migrated from /pages/sales/sales.axml, only modal part -->
+<view class="modal-mask" hidden="{{!showModal}}">
+  <view class="modal-container receipt-style-fixed">
+    <view class="receipt-content">
+      <!-- Header toko -->
+      <view class="receipt-header">
+        <text class="store-name">TOKO UMKM CONTOH</text>
+      </view>
+      <view class="receipt-address">
+        <text class="store-address">Jl. Contoh Alamat No.1, Kota, Indonesia</text>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Info Transaksi -->
+      <view class="receipt-info">
+        <view><text>{{receiptNoLabel}}</text><text class="info-value">: {{receiptNo}}</text></view>
+        <view><text>{{dateLabel}}</text><text class="info-value">: {{receiptDate}}</text></view>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Produk -->
+      <block a:for="{{selectedProducts}}" a:key="sku">
+        <view class="receipt-product-row">
+          <text>{{item.qty}} x {{item.name}}</text>
+          <text class="amount">{{item.displayAmount}}</text>
+        </view>
+      </block>
+      <view class="receipt-separator"></view>
+      <!-- Subtotal dan Total -->
+      <view class="receipt-total-row">
+        <text>{{subtotalLabel}}</text>
+        <text class="amount">{{totalPriceLabel}}</text>
+      </view>
+      <view class="receipt-total-row grand">
+        <text>{{totalLabel}}</text>
+        <text class="amount">{{totalPriceLabel}}</text>
+      </view>
+      <view class="receipt-separator"></view>
+      <!-- Footer -->
+      <view class="receipt-footer">
+        <text class="thankyou">Thank you 🙏</text>
+        <text class="powered">Powered by DANA Indonesia</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button onTap="onPrint">{{printLabel}}</button>
+      <button onTap="onDownload">{{downloadLabel}}</button>
+      <button onTap="onCloseModal">{{closeLabel}}</button>
+    </view>
+  </view>
+</view>
 </view>
