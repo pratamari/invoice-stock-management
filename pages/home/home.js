@@ -72,7 +72,15 @@ Page({
   goToProducts() {
     my.navigateTo({ url: '/pages/products/products' });
   },
+  goToSalesList() {
+    my.navigateTo({
+      url: '/pages/sales-list/index'
+    });
+  },
+
   goToSales() {
-    my.navigateTo({ url: '/pages/sales-list/index' });
+    my.navigateTo({
+      url: '/pages/sales-add/index'
+    });
   },
 });

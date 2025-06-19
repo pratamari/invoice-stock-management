@@ -28,7 +28,7 @@ Page({
     totalLabel: '',
     thankYouLabel: '',
     printLabel: '',
-    downloadPDFLabel: '',
+    downloadLabel: '',
     closeLabel: '',
     showModal: false,
     selectedProducts: [],
@@ -54,7 +54,7 @@ Page({
       totalLabel: t('total'),
       thankYouLabel: t('thank_you'),
       printLabel: t('print'),
-      downloadPDFLabel: t('download_pdf'),
+      downloadLabel: t('download'),
       closeLabel: t('close')
     });
   },
@@ -79,14 +79,23 @@ Page({
     });
     this.setData({ products });
   },
+  formatCurrencyIDR(num) {
+    if (typeof num !== 'number') num = Number(num);
+    return num.toLocaleString('id-ID');
+  },
+
   onConfirm() {
-    const selectedProducts = this.data.products.filter(p => p.qty > 0);
+    const selectedProducts = this.data.products.filter(p => p.qty > 0).map(item => ({
+      ...item,
+      displayAmount: this.formatCurrencyIDR(item.qty * item.price)
+    }));
     if (selectedProducts.length === 0) {
       my.alert({ title: t('confirm'), content: t('select_product_first') });
       return;
     }
     const totalItems = selectedProducts.reduce((sum, p) => sum + p.qty, 0);
     const totalPrice = selectedProducts.reduce((sum, p) => sum + p.qty * p.price, 0);
+    const totalPriceLabel = this.formatCurrencyIDR(totalPrice);
     const receiptNo = generateReceiptNo();
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
@@ -101,6 +110,7 @@ Page({
       selectedProducts,
       totalItems,
       totalPrice,
+      totalPriceLabel,
       receiptNo,
       receiptDate
     });
@@ -125,11 +135,94 @@ Page({
   onCloseModal() {
     this.setData({ showModal: false });
     this.loadProducts(); // reset list
+    // Pastikan label total reset juga
+    this.setData({ totalPriceLabel: this.formatCurrencyIDR(0) });
   },
-  onPrint() {
-    my.alert({ title: t('print'), content: t('print_coming_soon') });
+  // Print ke printer BLE
+  async onPrint() {
+    const t = this.data.t || getApp().t;
+    try {
+      await my.openBluetoothAdapter();
+      my.getBluetoothDevices({
+        success: (res) => {
+          if (!res.devices || res.devices.length === 0) {
+            my.showToast({ type: 'fail', content: t('printer_not_found') });
+            return;
+          }
+          // Pilih printer pertama (atau bisa tampilkan pilihan)
+          const deviceId = res.devices[0].deviceId;
+          my.createBLEConnection({
+            deviceId,
+            success: () => {
+              // Render receipt ke canvas, convert ke image, kirim ke printer
+              my.createSelectorQuery().select('.receipt-content').node().exec(res2 => {
+                const node = res2[0].node;
+                my.canvasToTempFilePath({
+                  canvasId: node.id,
+                  success: (imgRes) => {
+                    // Kirim image ke printer BLE (umumnya ESC/POS printer BLE menerima bitmap)
+                    // Perlu konversi ke format yang printer dukung (implementasi tergantung printer)
+                    // Di sini pseudo-code, implementasi detail tergantung SDK printer
+                    my.writeBLECharacteristicValue({
+                      deviceId,
+                      serviceId: 'printer-service-id', // Ganti sesuai printer
+                      characteristicId: 'printer-char-id', // Ganti sesuai printer
+                      value: imgRes.tempFilePath, // Atau convert ke ArrayBuffer jika perlu
+                      success: () => {
+                        my.showToast({ type: 'success', content: t('print_success') });
+                      },
+                      fail: () => {
+                        my.showToast({ type: 'fail', content: t('print_failed') });
+                      }
+                    });
+                  },
+                  fail: () => {
+                    my.showToast({ type: 'fail', content: t('print_failed') });
+                  }
+                }, this);
+              });
+            },
+            fail: () => {
+              my.showToast({ type: 'fail', content: t('printer_connect_failed') });
+            }
+          });
+        },
+        fail: () => {
+          my.showToast({ type: 'fail', content: t('printer_not_found') });
+        }
+      });
+    } catch (e) {
+      my.showToast({ type: 'fail', content: t('printer_not_found') });
+    }
   },
-  onDownloadPDF() {
-    my.alert({ title: t('download_pdf'), content: t('pdf_coming_soon') });
-  }
+  // Download receipt sebagai image
+  onDownload() {
+    const t = this.data.t || getApp().t;
+    my.createSelectorQuery().select('.receipt-content').boundingClientRect().exec(rects => {
+      if (!rects[0]) {
+        my.showToast({ type: 'fail', content: t('download_failed') });
+        return;
+      }
+      my.createSelectorQuery().select('.receipt-content').node().exec(res => {
+        const node = res[0].node;
+        my.canvasToTempFilePath({
+          canvasId: node.id,
+          success: (res) => {
+            my.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                my.showToast({ type: 'success', content: t('download_success') });
+              },
+              fail: () => {
+                my.showToast({ type: 'fail', content: t('download_failed') });
+              }
+            });
+          },
+          fail: () => {
+            my.showToast({ type: 'fail', content: t('download_failed') });
+          }
+        }, this);
+      });
+    });
+  },
 });
