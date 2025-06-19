@@ -60,6 +60,6 @@
   "sales_detail_print": "Print Receipt",
   "sales_add_title": "Add Sale",
   "sales_add_product": "Add Product",
-  "sales_add_pay": "Pay",
-  "sales_add_qty_placeholder": "0"
+  "sales_add_qty_placeholder": "1",
+  "sales_add_save": "Save"
 }
