@@ -2,6 +2,7 @@
   <view class="header">
     <view class="header-content">
       <text class="title">{{orderPrefix}}{{orderNo}}</text>
+      <text class="transaction-date">{{transactionDate}}</text>
     </view>
   </view>
 

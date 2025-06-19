@@ -1,4 +1,5 @@
 const { t } = require('../../utils/i18n');
+const { getSales } = require('../../utils/storage');
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('id-ID');
@@ -30,16 +31,23 @@ Page({
   },
 
   loadSalesDetail(id) {
-    // For now using dummy data
-    // In real app, fetch order data using orderId
-    this.setData({
-      orderNo: id.slice(-4), // Use last 4 digits of order ID
-      products: [
-        { name: 'Product 1', qty: 2, price: 50000, subtotal: 100000 },
-        { name: 'Product 2', qty: 1, price: 75000, subtotal: 75000 }
-      ],
-      totalPrice: formatCurrency(175000)
-    });
+    const salesData = getSales();
+    const sale = salesData.find(s => s.orderId === parseInt(id));
+    
+    if (sale) {
+      const date = new Date(sale.transactionDate);
+      this.setData({
+        orderNo: sale.orderId,
+        transactionDate: `${date.toLocaleDateString('id-ID')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`,
+        products: sale.products.map(p => ({
+          name: p.name,
+          qty: p.qty,
+          price: formatCurrency(p.price),
+          subtotal: formatCurrency(p.price * p.qty)
+        })),
+        totalPrice: formatCurrency(sale.totalPayment)
+      });
+    }
   },
 
   onPrintReceipt() {
