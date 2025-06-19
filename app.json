@@ -1,11 +1,15 @@
 {
   "pages": [
+    "pages/home/home",
     "pages/index/index",
     "pages/products/products",
     "pages/products/addProduct",
     "pages/products/editProduct",
     "pages/sales/sales",
-    "pages/review_items/review_items"
+    "pages/review_items/review_items",
+    "pages/sales-list/index",
+    "pages/sales-detail/index",
+    "pages/sales-add/index"
   ],
   "window": {
     "defaultTitle": "UMKM Invoicing"

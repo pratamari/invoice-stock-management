@@ -59,6 +59,70 @@
   width: 90vw;
   box-sizing: border-box;
 }
+.receipt-style {
+  font-family: 'Menlo', 'Consolas', 'monospace';
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx 24rpx;
+  width: 92vw;
+  max-width: 500rpx;
+  box-sizing: border-box;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.receipt-header {
+  text-align: center;
+  margin-bottom: 10rpx;
+}
+.store-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+}
+.store-address {
+  font-size: 22rpx;
+  opacity: 0.8;
+}
+.receipt-separator {
+  border-bottom: 2rpx dashed #bbb;
+  margin: 12rpx 0;
+}
+.receipt-info {
+  font-size: 22rpx;
+  margin-bottom: 8rpx;
+}
+.info-value {
+  margin-left: 8rpx;
+}
+.receipt-product-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+  margin-bottom: 4rpx;
+}
+.receipt-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 26rpx;
+  margin: 6rpx 0;
+}
+.receipt-total-row.grand {
+  font-weight: bold;
+  font-size: 30rpx;
+}
+.receipt-footer {
+  text-align: center;
+  margin-top: 18rpx;
+  font-size: 24rpx;
+}
+.powered {
+  font-size: 20rpx;
+  margin-top: 8rpx;
+  opacity: 0.6;
+}
+
 .modal-header {
   font-size: 32rpx;
   font-weight: bold;

@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="header">
+    <view class="header-content">
+      <text class="title">{{orderPrefix}}{{orderNo}}</text>
+      <text class="transaction-date">{{transactionDate}}</text>
+    </view>
+  </view>
+
+  <scroll-view class="content" scroll-y="{{true}}">
+    <view class="products-list">
+      <block a:for="{{products}}" a:key="*this">
+        <view class="product-item">
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-detail">{{item.qty}} x Rp {{item.price}}</text>
+          </view>
+          <text class="product-subtotal">Rp {{item.subtotal}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="total-section">
+      <text class="total-label">{{totalLabel}}</text>
+      <text class="total-amount">Rp {{totalPrice}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="actions">
+    <button class="print-button" onTap="onPrintReceipt">{{printLabel}}</button>
+  </view>
+</view>

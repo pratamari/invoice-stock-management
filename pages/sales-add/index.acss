@@ -1,0 +1,124 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.header {
+  padding: 16px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.products-list {
+  background: #fff;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #f5f5f5;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 16px;
+}
+
+.product-name {
+  font-size: 16px;
+}
+
+.product-price {
+  font-size: 14px;
+  color: #666;
+}
+
+.quantity-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-field {
+  width: 80px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.actions {
+  padding: 16px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.add-product-button, .pay-button {
+  flex: 1;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.add-product-button {
+  background: #fff;
+  border: 1px solid #1677ff;
+  color: #1677ff;
+}
+
+.pay-button {
+  background: #1677ff;
+  color: #fff;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.remove-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: #ff4d4f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+}
