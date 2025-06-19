@@ -16,8 +16,9 @@
 
 .header-content {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  width: 100%;
 }
 
 .back-button {
@@ -100,4 +101,10 @@
   color: #fff;
   border-radius: 8px;
   font-size: 16px;
+}
+
+.transaction-date {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
 }

@@ -1,4 +1,5 @@
 const { t } = require('../../utils/i18n');
+const { getSales, saveSales, getLastOrderId, saveLastOrderId } = require('../../utils/storage');
 
 const formatCurrency = (amount) => {
   return amount.toLocaleString('id-ID');
@@ -101,10 +102,28 @@ Page({
       return;
     }
 
-    const orderId = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    const lastOrderId = getLastOrderId();
+    const newOrderId = lastOrderId + 1;
     
+    const salesData = {
+      orderId: newOrderId,
+      transactionDate: new Date().toISOString(),
+      totalPayment: this.data.products.reduce((sum, p) => sum + (p.price * p.qty), 0),
+      totalProduct: this.data.products.reduce((sum, p) => sum + p.qty, 0),
+      products: this.data.products.map(p => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        qty: p.qty
+      }))
+    };
+
+    const existingSales = getSales();
+    saveSales([salesData, ...existingSales]);
+    saveLastOrderId(newOrderId);
+
     my.redirectTo({
-      url: `/pages/sales-detail/index?id=${orderId}`
+      url: `/pages/sales-detail/index?id=${newOrderId}`
     });
   }
 });
