@@ -1,6 +1,8 @@
 // pages/products/addProduct.js
 const { t } = require('../../utils/i18n');
 const { STORAGE_KEYS, save, load } = require('../../utils/storage');
+const { createProduct, generateSku, saveProducts, loadProducts } = require('../../utils/product_model');
+const categories = require('./product_category.json');
 
 Page({
   data: {
@@ -9,68 +11,130 @@ Page({
       name: '',
       category: '',
       price: '',
-      stock: 0
     },
+    categories: [],
+    filteredCategories: [],
+    showCategoryDropdown: false,
+    categorySearch: '',
     addProductLabel: '',
     productNameLabel: '',
     productCategoryLabel: '',
     productPriceLabel: '',
-    productStockLabel: '',
     saveLabel: '',
     cancelLabel: '',
     productNamePlaceholder: '',
     productCategoryPlaceholder: '',
-    productPricePlaceholder: '',
-    productStockPlaceholder: ''
+    productPricePlaceholder: ''
   },
+
   onLoad() {
     this.setData({
-      addProductLabel: t('add_product'),
-      productNameLabel: t('product_name'),
-      productCategoryLabel: t('product_category'),
-      productPriceLabel: t('product_price'),
-      productStockLabel: t('product_stock'),
-      saveLabel: t('save'),
-      cancelLabel: t('cancel'),
-      productNamePlaceholder: t('product_name_placeholder'),
-      productCategoryPlaceholder: t('product_category_placeholder'),
-      productPricePlaceholder: t('product_price_placeholder'),
-      productStockPlaceholder: t('product_stock_placeholder')
+      addProductLabel: 'Tambah Produk',
+      productNameLabel: 'Nama Produk',
+      productCategoryLabel: 'Kategori Produk',
+      productPriceLabel: 'Harga Produk',
+      saveLabel: 'Simpan',
+      cancelLabel: 'Batal',
+      productNamePlaceholder: 'Nama Produk',
+      productCategoryPlaceholder: 'Pilih Kategori',
+      productPricePlaceholder: 'Harga Produk',
+      categories: categories
     });
   },
+
   onSubmitAddProduct(e) {
-    const { name, category, price, stock } = e.detail.value;
+    const { name, category, price } = e.detail.value;
     // Validation
     if (!name || !category || !price) {
       my.alert({
-        title: t('add_product'),
-        content: t('form_required_fields')
+        title: 'Tambah Produk',
+        content: 'Mohon lengkapi semua field'
       });
       return;
     }
-    const stockVal = Number(stock);
-    if (isNaN(stockVal) || stockVal < 0) {
+
+    // Validate category exists in the list
+    if (!this.data.categories.includes(category)) {
       my.alert({
-        title: t('add_product'),
-        content: t('stock_cannot_negative')
+        title: 'Kategori Tidak Valid',
+        content: 'Mohon pilih kategori dari daftar yang tersedia'
       });
       return;
     }
-    // Generate SKU automatically: NAME-CAT-<RANDOM>
-    const sku = `${name.replace(/\s+/g, '').toUpperCase()}-${category.replace(/\s+/g, '').toUpperCase()}-${Math.floor(Math.random()*10000)}`;
-    const newProduct = {
+
+    const newProduct = createProduct({
+      sku: generateSku(name, category),
       name,
       category,
-      price: parseFloat(price),
-      stock: stockVal,
-      sku,
-    };
-    let products = load(STORAGE_KEYS.PRODUCTS);
+      price,
+      stock: 0
+    });
+
+    let products = loadProducts();
     products.unshift(newProduct);
-    save(STORAGE_KEYS.PRODUCTS, products);
+    saveProducts(products);
     my.navigateBack();
   },
+
   onCancelAddProduct() {
     my.navigateBack();
+  },
+
+  onCategoryInput(e) {
+    const search = e.detail.value.toLowerCase();
+    let filtered = this.data.categories;
+    
+    if (search.length >= 2) {
+      filtered = this.data.categories.filter(cat => 
+        cat.toLowerCase().startsWith(search)
+      );
+    }
+
+    this.setData({
+      categorySearch: search,
+      'addForm.category': '', // Clear selected category when typing
+      filteredCategories: filtered,
+      showCategoryDropdown: true
+    });
+  },
+
+  onCategoryFocus() {
+    this.setData({
+      showCategoryDropdown: true,
+      filteredCategories: this.data.categories
+    });
+  },
+
+  onCategorySelect(e) {
+    const category = e.target.dataset.category;
+    this.setData({
+      'addForm.category': category,
+      categorySearch: category,
+      showCategoryDropdown: false
+    });
+  },
+
+  onCategoryBlur() {
+    // Delay hiding dropdown to allow click event to fire
+    setTimeout(() => {
+      const category = this.data.categorySearch;
+      // If typed category doesn't exist in list, clear it
+      if (!this.data.categories.includes(category)) {
+        this.setData({
+          categorySearch: '',
+          'addForm.category': ''
+        });
+      }
+      this.setData({
+        showCategoryDropdown: false
+      });
+    }, 200);
+  },
+
+  onCategoryChange(e) {
+    const { value } = e.detail;
+    this.setData({
+      'addForm.category': this.data.categories[value]
+    });
   }
 });
