@@ -3,9 +3,6 @@
     <view class="modal-header">{{addProductLabel}}</view>
     <form onSubmit="onSubmitAddProduct">
       <view class="form-group">
-        <button type="default" onTap="onScanReceipt">Scan Receipt</button>
-      </view>
-      <view class="form-group">
         <text>{{productNameLabel}}</text>
         <input name="name" value="{{addForm.name}}" placeholder="{{productNamePlaceholder}}" />
       </view>

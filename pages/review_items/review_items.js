@@ -1,4 +1,5 @@
 const { STORAGE_KEYS, save, load } = require('../../utils/storage');
+const { createProduct, generateSku, saveProducts, loadProducts } = require('../../utils/product_model');
 
 Page({
   data: {
@@ -33,11 +34,12 @@ Page({
   handleSubmit() {
     console.log('Debug - Current items:', this.data.items);
 
-    const products = this.data.items.map(item => ({
-      sku: Math.random().toString(36).substring(7),
+    const products = this.data.items.map(item => createProduct({
+      sku: generateSku(item.name, 'SCAN'),
       name: item.name,
-      quantity: parseFloat(item.quantity) || 0,
-      price: parseFloat(item.price) || 0
+      category: 'Scan',
+      stock: item.quantity,
+      price: item.price
     }));
 
     console.log('Debug - Mapped products:', products);
@@ -45,7 +47,7 @@ Page({
     // Get existing products
     let existingProducts = [];
     try {
-      existingProducts = load(STORAGE_KEYS.PRODUCTS) || [];
+      existingProducts = loadProducts();
       console.log('Debug - Existing products:', existingProducts);
       
       if (!Array.isArray(existingProducts)) {
@@ -61,7 +63,7 @@ Page({
     console.log('Debug - Updated products:', updatedProducts);
 
     try {
-      save(STORAGE_KEYS.PRODUCTS, updatedProducts);
+      saveProducts(updatedProducts);
       console.log('Debug - Products saved successfully');
 
       // Refresh the products page

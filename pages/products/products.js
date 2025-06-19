@@ -1,6 +1,7 @@
 // pages/products/products.js
 const { t } = require('../../utils/i18n');
 const { STORAGE_KEYS, save, load } = require('../../utils/storage');
+const { createProduct, saveProducts, loadProducts } = require('../../utils/product_model');
 const { apiKey, userId, baseUrl } = require('../../config/index');
 Page({
   data: {
@@ -10,13 +11,11 @@ Page({
   loadProducts() {
     console.log('Debug - Loading products');
     try {
-      const products = load(STORAGE_KEYS.PRODUCTS);
+      const products = loadProducts();
       console.log('Debug - Raw storage:', products);
       
       // Ensure we always set a valid array
-      this.setData({ 
-        products: Array.isArray(products) ? products : [] 
-      });
+      this.setData({ products });
       console.log('Debug - Final products:', this.data.products);
     } catch (e) {
       console.error('Debug - Error loading products:', e);
@@ -34,27 +33,10 @@ Page({
   },
 
   refreshProducts() {
-    // Load products first
-    this.loadProducts();
-    
-    // Format products for display
-    const formattedProducts = this.data.products.map(product => {
-      // Normalize stock/quantity field
-      const stockAmount = product.stock || product.quantity || 0;
-      
-      return {
-        ...product,
-        stock: stockAmount, // Normalize to use stock consistently
-        formattedPrice: `Rp ${(product.price || 0).toLocaleString('id-ID')}`,
-        formattedStock: stockAmount,
-        showMenu: false,
-        isEditing: false
-      };
-    });
-    
-    this.setData({ products: formattedProducts });
-    // Save the normalized data back to storage
-    save(STORAGE_KEYS.PRODUCTS, formattedProducts);
+    // Load and standardize products
+    const products = loadProducts();
+    console.log('Debug - Formatted products:', products);
+    this.setData({ products });
   },
 
   onAddProduct() {
@@ -78,7 +60,7 @@ Page({
     products[index].stock = stock;
     products[index].formattedStock = stock;
     this.setData({ products });
-    save(STORAGE_KEYS.PRODUCTS, products);
+    saveProducts(products);
   },
 
   onPriceChange(e) {
@@ -88,7 +70,7 @@ Page({
     products[index].price = price;
     products[index].formattedPrice = `Rp ${price.toLocaleString('id-ID')}`;
     this.setData({ products });
-    save(STORAGE_KEYS.PRODUCTS, products);
+    saveProducts(products);
   },
 
   onDeleteProduct(e) {
@@ -111,7 +93,7 @@ Page({
       cancelButtonText: t('Batal'),
       success: (result) => {
         if (result.confirm) {
-          save(STORAGE_KEYS.PRODUCTS, products);
+          saveProducts(products);
           this.refreshProducts();
         }
       }

@@ -1,6 +1,7 @@
 // pages/products/addProduct.js
 const { t } = require('../../utils/i18n');
 const { STORAGE_KEYS, save, load } = require('../../utils/storage');
+const { createProduct, generateSku, saveProducts, loadProducts } = require('../../utils/product_model');
 const categories = require('./product_category.json');
 
 Page({
@@ -61,19 +62,17 @@ Page({
       return;
     }
 
-    // Generate SKU automatically: NAME-CAT-<RANDOM>
-    const sku = `${name.replace(/\s+/g, '').toUpperCase()}-${category.replace(/\s+/g, '').toUpperCase()}-${Math.floor(Math.random()*10000)}`;
-    const newProduct = {
+    const newProduct = createProduct({
+      sku: generateSku(name, category),
       name,
       category,
-      price: parseFloat(price),
-      sku,
+      price,
       stock: 0
-    };
+    });
 
-    let products = load(STORAGE_KEYS.PRODUCTS) || [];
+    let products = loadProducts();
     products.unshift(newProduct);
-    save(STORAGE_KEYS.PRODUCTS, products);
+    saveProducts(products);
     my.navigateBack();
   },
 
@@ -137,64 +136,5 @@ Page({
     this.setData({
       'addForm.category': this.data.categories[value]
     });
-  },
-
-  async onScanReceipt() {
-    const token = 'app-5ufQEDL5OidiFMdQCNkNBubS';
-    const user = 'abc-123';
-
-    try {
-      const imageRes = await new Promise((resolve, reject) => {
-        my.chooseImage({
-          count: 1,
-          sourceType: ['camera', 'album'],
-          success: resolve,
-          fail: reject
-        });
-      });
-
-      if (!imageRes.apFilePaths || !imageRes.apFilePaths.length) {
-        throw new Error('No image selected');
-      }
-
-      my.showLoading({
-        content: 'Uploading image...'
-      });
-
-      // First API call - Upload file
-      const uploadRes = await my.uploadFile({
-        url: 'https://hermes-flow.platform.danaventures.id/v1/files/upload',
-        fileType: 'image',
-        fileName: 'receipt.jpg',
-        filePath: imageRes.apFilePaths[0],
-        header: {
-          'Authorization': `Bearer ${token}`
-        },
-        formData: {
-          user: user
-        }
-      });
-
-      const uploadData = JSON.parse(uploadRes.data);
-      const fileId = uploadData.id;
-
-      // Navigate to scan result page with the file ID
-      my.navigateTo({
-        url: `/pages/scan_result/scan_result`,
-        success: () => {
-          getApp().globalData = getApp().globalData || {};
-          getApp().globalData.uploadedFileId = fileId;
-        }
-      });
-
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      my.alert({
-        title: 'Error',
-        content: 'Failed to upload image: ' + (error.message || 'Unknown error')
-      });
-    } finally {
-      my.hideLoading();
-    }
   }
 });
