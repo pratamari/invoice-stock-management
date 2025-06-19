@@ -79,14 +79,23 @@ Page({
     });
     this.setData({ products });
   },
+  formatCurrencyIDR(num) {
+    if (typeof num !== 'number') num = Number(num);
+    return num.toLocaleString('id-ID');
+  },
+
   onConfirm() {
-    const selectedProducts = this.data.products.filter(p => p.qty > 0);
+    const selectedProducts = this.data.products.filter(p => p.qty > 0).map(item => ({
+      ...item,
+      displayAmount: this.formatCurrencyIDR(item.qty * item.price)
+    }));
     if (selectedProducts.length === 0) {
       my.alert({ title: t('confirm'), content: t('select_product_first') });
       return;
     }
     const totalItems = selectedProducts.reduce((sum, p) => sum + p.qty, 0);
     const totalPrice = selectedProducts.reduce((sum, p) => sum + p.qty * p.price, 0);
+    const totalPriceLabel = this.formatCurrencyIDR(totalPrice);
     const receiptNo = generateReceiptNo();
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
@@ -101,6 +110,7 @@ Page({
       selectedProducts,
       totalItems,
       totalPrice,
+      totalPriceLabel,
       receiptNo,
       receiptDate
     });
@@ -125,6 +135,8 @@ Page({
   onCloseModal() {
     this.setData({ showModal: false });
     this.loadProducts(); // reset list
+    // Pastikan label total reset juga
+    this.setData({ totalPriceLabel: this.formatCurrencyIDR(0) });
   },
   // Print ke printer BLE
   async onPrint() {
@@ -184,7 +196,7 @@ Page({
     }
   },
   // Download receipt sebagai image
-  onDownloadPDF() {
+  onDownload() {
     const t = this.data.t || getApp().t;
     my.createSelectorQuery().select('.receipt-content').boundingClientRect().exec(rects => {
       if (!rects[0]) {

@@ -24,9 +24,11 @@
       <view class="receipt-content">
         <!-- Header toko -->
         <view class="receipt-header">
-          <text class="store-name">TOKO UMKM CONTOH</text>
-          <text class="store-address">Jl. Contoh Alamat No.1, Kota, Indonesia</text>
-        </view>
+  <text class="store-name">TOKO UMKM CONTOH</text>
+</view>
+<view class="receipt-address">
+  <text class="store-address">Jl. Contoh Alamat No.1, Kota, Indonesia</text>
+</view>
         <view class="receipt-separator"></view>
         <!-- Info Transaksi -->
         <view class="receipt-info">
@@ -37,30 +39,32 @@
         <!-- Produk -->
         <block a:for="{{selectedProducts}}" a:key="sku">
           <view class="receipt-product-row">
-            <text>{{item.qty}} x {{item.name}}</text>
-            <text>{{item.qty * item.price | formatCurrency}}</text>
-          </view>
+  <text>{{item.qty}} x {{item.name}}</text>
+  <text>Rp {{item.displayAmount}}</text>
+</view>
         </block>
         <view class="receipt-separator"></view>
         <!-- Subtotal dan Total -->
         <view class="receipt-total-row">
-          <text>{{subtotalLabel}}</text>
-          <text>{{totalPrice | formatCurrency}}</text>
-        </view>
-        <view class="receipt-total-row grand">
-          <text>{{totalLabel}}</text>
-          <text>{{totalPrice | formatCurrency}}</text>
-        </view>
+  <text>{{subtotalLabel}}</text>
+  <text>Rp {{totalPriceLabel}}</text>
+</view>
+<view class="receipt-total-row grand">
+  <text>{{totalLabel}}</text>
+  <text>Rp {{totalPriceLabel}}</text>
+</view>
         <view class="receipt-separator"></view>
         <!-- Footer -->
         <view class="receipt-footer">
-          <text>{{thankYouLabel}}</text>
-          <text class="powered">Powered by DANA Indonesia</text>
-        </view>
+  <text>{{thankYouLabel}}</text>
+  <view class="powered">
+    <text>Powered by DANA Indonesia</text>
+  </view>
+</view>
       </view>
       <view class="modal-footer">
         <button onTap="onPrint">{{printLabel}}</button>
-        <button onTap="onDownloadPDF">{{downloadLabel}}</button>
+        <button onTap="onDownload">{{downloadLabel}}</button>
         <button onTap="onCloseModal">{{closeLabel}}</button>
       </view>
     </view>
