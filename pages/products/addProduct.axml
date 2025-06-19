@@ -43,8 +43,8 @@
         <input type="digit" name="price" value="{{addForm.price}}" placeholder="{{productPricePlaceholder}}" />
       </view>
       <view class="form-group">
-        <text>{{productStockLabel}}</text>
-        <input type="number" name="stock" value="{{addForm.stock}}" min="0" placeholder="{{productStockPlaceholder}}" />
+        <text>{{productStokLabel}}</text>
+        <input type="digit" name="stock" value="{{addForm.stock}}" placeholder="{{productStokPlaceholder}}" />
       </view>
       <view class="form-group">
         <button formType="submit">{{saveLabel}}</button>

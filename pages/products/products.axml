@@ -1,5 +1,5 @@
-<view class="page" onTap="closeAllMenus">
-  <text class="title">Products</text>
+<view class="page">
+  <text class="title">Daftar Produk</text>
   <view class="button-group">
     <button class="action-btn" onTap="onAddProduct">Tambah</button>
     <button class="action-btn" onTap="onScanNote">Pindai Nota</button>
@@ -15,12 +15,12 @@
               <text class="product-sku">SKU: {{item.sku}}</text>
             </view>
             <view class="menu-wrapper">
-              <text class="dots" catchTap="showMenu" data-index="{{index}}">⋮</text>
-              <view class="action-menu" a:if="{{item.showMenu}}">
-                <view class="menu-item" catchTap="toggleEdit" data-index="{{index}}" data-menu-item="true">
+              <text class="dots" onTap="showMenu" data-index="{{index}}">⋮</text>
+              <view class="action-menu" a:if="{{item.showMenu}}" onTap="menuTap">
+                <view class="menu-item" onTap="toggleEdit" data-index="{{index}}">
                   <text class="menu-text">{{item.isEditing ? 'Simpan' : 'Ubah'}}</text>
                 </view>
-                <view class="menu-item" catchTap="onDeleteProduct" data-sku="{{item.sku}}" data-menu-item="true">
+                <view class="menu-item" onTap="onDeleteProduct" data-sku="{{item.sku}}">
                   <text class="menu-text">Hapus</text>
                 </view>
               </view>
@@ -29,7 +29,7 @@
         </view>
 
         <view class="row">
-          <text class="row-label">Jumlah</text>
+          <text class="row-label">Stok</text>
           <view class="row-value-group">
             <block a:if="{{item.isEditing}}">
               <input class="value-input" type="number" value="{{item.stock}}" onInput="onStockChange" data-index="{{index}}" />

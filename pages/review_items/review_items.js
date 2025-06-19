@@ -38,8 +38,6 @@ Page({
     let existingProducts = [];
     try {
       existingProducts = loadProducts();
-      console.log('Debug - Existing products:', existingProducts);
-      
       if (!Array.isArray(existingProducts)) {
         console.warn('Debug - Products not an array, resetting');
         existingProducts = [];
@@ -49,51 +47,71 @@ Page({
       existingProducts = [];
     }
 
-    const newProducts = [];
+    // Process each scanned item
     const updatedProducts = [...existingProducts];
+    const newProducts = [];
 
-    // Process each item
     this.data.items.forEach(item => {
-      // Find existing product by name
-      const existingIndex = existingProducts.findIndex(
+      // Try to find existing product by name (case-insensitive)
+      const existingProduct = updatedProducts.find(
         p => p.name.toLowerCase() === item.name.toLowerCase()
       );
 
-      if (existingIndex >= 0) {
+      if (existingProduct) {
         // Update existing product quantity
-        updatedProducts[existingIndex] = {
-          ...updatedProducts[existingIndex],
-          stock: (updatedProducts[existingIndex].stock || 0) + item.quantity
-        };
+        existingProduct.stock = (parseFloat(existingProduct.stock) || 0) + (parseFloat(item.quantity) || 0);
+        console.log(`Debug - Updated existing product ${existingProduct.name}, new stock: ${existingProduct.stock}`);
       } else {
         // Create new product
-        newProducts.push(createProduct({
+        const newProduct = createProduct({
           sku: generateSku(item.name, 'SCAN'),
           name: item.name,
           category: 'Scan',
           stock: item.quantity,
           price: item.price
-        }));
+        });
+        newProducts.push(newProduct);
+        updatedProducts.push(newProduct);
+        console.log(`Debug - Created new product: ${newProduct.name}`);
       }
     });
 
-    // Add new products to updated list
-    updatedProducts.push(...newProducts);
-    console.log('Debug - Updated products:', updatedProducts);
-
     try {
+      // Save all products
       saveProducts(updatedProducts);
       console.log('Debug - Products saved successfully');
 
+      // Show success message with summary
+      const message = newProducts.length > 0 ?
+        `Added ${newProducts.length} new products and updated ${this.data.items.length - newProducts.length} existing products` :
+        `Updated ${this.data.items.length} existing products`;
+
       my.showToast({
         type: 'success',
-        content: 'Products saved successfully'
+        content: message
       });
 
-      // Navigate back
-      my.navigateBack({
-        delta: 2
-      });
+      // Refresh products page if it exists
+      const pages = getCurrentPages();
+      const productsPage = pages.find(p => p.route === 'pages/products/products');
+      if (productsPage) {
+        productsPage.loadProducts();
+      }
+
+      // Navigate back to products page
+      const currentPages = getCurrentPages();
+      const productsPageIndex = currentPages.findIndex(p => p.route === 'pages/products/products');
+      
+      if (productsPageIndex >= 0) {
+        // Calculate how many pages to go back to reach products page
+        const delta = currentPages.length - productsPageIndex - 1;
+        my.navigateBack({ delta });
+      } else {
+        // If products page not found in stack, redirect to it
+        my.redirectTo({
+          url: '/pages/products/products'
+        });
+      }
     } catch (e) {
       console.error('Debug - Error saving products:', e);
       my.showToast({

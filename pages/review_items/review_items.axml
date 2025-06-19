@@ -1,30 +1,30 @@
 <!-- review_items.axml -->
 <view class="page">
   <view class="header">
-    <view class="title">Review Items</view>
-    <view class="subtitle">Verify or edit the extracted items</view>
+    <view class="title">Tinjau Produk</view>
+    <view class="subtitle">Verifikasi atau ubah produk</view>
   </view>
 
   <view class="items-container">
     <view class="item-card" a:for="{{items}}">
-      <view class="item-number">Item {{index + 1}}</view>
+      <view class="item-number">produk {{index + 1}}</view>
       
       <view class="input-group">
         <view class="input-container">
-          <text class="label">Product Name</text>
+          <text class="label">Nama Produk</text>
           <input class="input" value="{{item.name}}" placeholder="Enter product name" 
                  data-index="{{index}}" data-field="name" onInput="handleInput" />
         </view>
 
         <view class="input-row">
           <view class="input-container half">
-            <text class="label">Quantity</text>
+            <text class="label">Stok</text>
             <input class="input" type="number" value="{{item.quantity}}" placeholder="0" 
                    data-index="{{index}}" data-field="quantity" onInput="handleInput" />
           </view>
 
           <view class="input-container half">
-            <text class="label">Price (Rp)</text>
+            <text class="label">Harga (Rp)</text>
             <input class="input" type="digit" value="{{item.price}}" placeholder="0" 
                    data-index="{{index}}" data-field="price" onInput="handleInput" />
           </view>
@@ -34,7 +34,7 @@
   </view>
 
   <view class="footer">
-    <button class="btn-secondary" onTap="handleCancel">Cancel</button>
-    <button class="btn-primary" onTap="handleSubmit">Save Products</button>
+    <button class="btn-secondary" onTap="handleCancel">Batal</button>
+    <button class="btn-primary" onTap="handleSubmit">Simpan</button>
   </view>
 </view>
